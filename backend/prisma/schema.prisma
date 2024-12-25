@@ -15,12 +15,13 @@ datasource db {
 
 model User {
   id Int @id @default(autoincrement())
-  photo String
   name String
   email String @unique
-  course String
-  department String
-  batch String
+  password String
+  photo String?
+  course String?
+  department String?
+  batch String?
 
   enroll String?
   phone String?
@@ -40,6 +41,7 @@ model Admin {
   photo String
   name String?
   email String @unique
+  password String
 
   phone String?
   linkdn String?
