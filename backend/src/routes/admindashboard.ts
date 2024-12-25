@@ -23,5 +23,9 @@ router.post("users/rejected", async (req: Request, res: Response):Promise<any> =
 router.post("users/update", async (req: Request, res: Response):Promise<any> =>{
     return;
 });
+//make a new admin
+router.post("create-admin", async (req: Request, res: Response):Promise<any> =>{
+    return;
+});
 
 export default router;
