@@ -4,7 +4,7 @@ const router = express.Router();
 import userAuthRouter from './userauth';
 import userDashboardRouter from './userdashboard'
 
-router.use('/userauth', userAuthRouter);
-router.use('/userdashboard', userDashboardRouter);
+router.use('/auth', userAuthRouter);
+router.use('/dashboard', userDashboardRouter);
 
 export default router;

@@ -65,12 +65,12 @@ router.post("/signup", async (req: Request, res: Response ):Promise<any>=> {
     }
     const token = jwt.sign({userId: user.id}, JWT_SECRET);
     const mailOptions ={
-        from:'"Verify your email" abc@gmail.com',
+        from:process.env.EMAIL_USER,
         to:email,
         subject: "NIT Srinagar-Verify your email",
         html: `<h1>${name}! welcome to the alumini network of NIT Srinagar</h1>
         <h4>Click on the link below to verify your email</h4>
-        <a href="${BASE_URL}/user/verifyemail?token=${token}&email=${email}">Verify Email</a>`
+        <a href="${BASE_URL}/user/auth/verifyemail?token=${token}&email=${email}">Verify Email</a>`
     }
     transport.sendMail(mailOptions, (error, info)=>{
         if(error){
@@ -79,7 +79,9 @@ router.post("/signup", async (req: Request, res: Response ):Promise<any>=> {
             console.log("Email sent: "+info.response);
         }
     })
-    return;
+    return res.json({
+        message:"done"
+    });
 });
 //signin
 const signinBody = zod.object({
