@@ -70,7 +70,7 @@ router.post("/signup", async (req: Request, res: Response ):Promise<any>=> {
         subject: "NIT Srinagar-Verify your email",
         html: `<h1>${name}! welcome to the alumini network of NIT Srinagar</h1>
         <h4>Click on the link below to verify your email</h4>
-        <a href="${BASE_URL}/user/auth/verifyemail?token=${token}&email=${email}">Verify Email</a>`
+        <a href="${BASE_URL}/api/v1/user/auth/verifyemail?token=${token}&email=${email}">Verify Email</a>`
     }
     transport.sendMail(mailOptions, (error, info)=>{
         if(error){
@@ -110,7 +110,7 @@ router.post("/signin", async (req: Request, res: Response, next: NextFunction): 
             subject: "NIT Srinagar-Verify your email",
             html: `<h1>${existingUser.name}! welcome to the alumini network of NIT Srinagar</h1>
             <h4>Click on the link below to verify your email</h4>
-            <a href="${BASE_URL}/user/verifyemail?token=${token}&email=${existingUser.email}">Verify Email</a>`
+            <a href="${BASE_URL}/api/v1/user/verifyemail?token=${token}&email=${existingUser.email}">Verify Email</a>`
         }
         transport.sendMail(mailOptions, (error, info)=>{
             if(error){
@@ -127,15 +127,13 @@ router.post("/signin", async (req: Request, res: Response, next: NextFunction): 
     if(!passwordMatch){
         return res.status(400).json({error: "Wrong password"});
     }
-    res.json({
-        message: "Signin successful",
-        token: token
-    });
+    res.cookie("token", token);
+    res.send("Logged in!");
     return;
 });
 
-//otpverify for signup
-router.post("/verifyemail", async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+//verify the email to prevent email spoofing
+router.get("/verifyemail", async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const token = req.query.token;
     const email = req.query.email;
     if(!token || !email){
