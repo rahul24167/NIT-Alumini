@@ -22,25 +22,23 @@ router.post("/signin", async (req: Request, res: Response, next: NextFunction): 
     if (!success) {
         return res.status(400).json({ error: "Invalid request body" });
     }
-    const existingUser = await prisma.user.findFirst({
+    const existingAdmin = await prisma.admin.findFirst({
         where: {
             email: req.body.email,
         }
     })
-    if (!existingUser) {
+    if (!existingAdmin) {
         return res.status(400).json({ error: "Invalid email or password" });
     }
-    const hashedPassword = existingUser.password;
+    const hashedPassword = existingAdmin.password;
     const password = req.body.password;
     const passwordMatch = await bcrypt.compare(password, hashedPassword);
     if (!passwordMatch) {
         return res.status(400).json({ error: "Wrong password" });
     }
-    const token = jwt.sign({ userId: existingUser.id }, JWT_SECRET);
-    res.json({
-        message: "Signin successful",
-        token: token
-    });
+    const token = jwt.sign({ adminId: existingAdmin.id }, JWT_SECRET);
+    res.cookie("token", token);
+    res.send("Logged in!");
     return;
 });
 

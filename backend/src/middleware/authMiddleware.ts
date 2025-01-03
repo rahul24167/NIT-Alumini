@@ -15,7 +15,8 @@ export const authMiddleware = (
   next: NextFunction
 ) => {
   if (!req.cookies.token) {
-    return res.status(401).json({ error: "Unauthorized" });
+    res.status(401).json({ error: "Unauthorized" });
+    return;
   }
   const token = req.cookies.token;
   try {
@@ -30,11 +31,11 @@ export const authMiddleware = (
       next();
       return;
     } else {
-      res.status(403).json({});
+      res.status(403).json({"error":"Unauthorized"});
       return;
     }
   } catch (error) {
-    res.status(403).json({});
+    res.status(403).json({"error":"something went wrong"});
     return;
   }
 };
