@@ -1,23 +1,15 @@
-import express,{Request, Response} from 'express';
-import { authMiddleware } from '../middleware/authMiddleware';
+import express,{Request, Response} from 'express'
 const router = express.Router();
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-//there is some error in the code fix it
-// users?name=rahul&page1
-router.post("/users",authMiddleware, async (req: Request, res: Response ):Promise<any>=> {
-    const {userId, searchByBatchs=[], searchByDepartments=[], searchByCourses=[]} = req.body;
+
+router.post("/users", async (req: Request, res: Response ):Promise<any>=> {
+    const {searchByBatchs=[], searchByDepartments=[], searchByCourses=[]} = req.body;
     const {name,page} = req.query;
     //searchByDepartments, searchByCourses are arrays
     //perpage 100 users
-    if(!userId){
-        res.status(403).json({error:"User not found"});
-        return;
-    }
+    
     const filter: any = {
-        NOT: {
-            id: userId
-        },
         accountVerified: true,
     };
     if(req.query.name){
@@ -44,14 +36,20 @@ router.post("/users",authMiddleware, async (req: Request, res: Response ):Promis
     const users = await prisma.user.findMany({
         where: filter,
         skip: 100*(parseInt(page as string)-1),
-        take: 100
+        take: 100,
+        select: {
+            id: true,
+            name: true,
+            course: true,
+            department: true,
+            batch: true,
+        },
     });
     res.status(200).json({ users });
     return;
 });
-// when you update isRejected turns to false untill admin verify the changes you made.
-router.post("/update",authMiddleware, async (req: Request, res: Response):Promise<any> =>{
-    const {userId, name, email, department, course, batch, accountVerified, rejected} = req.body;
-})
+
+
+
 
 export default router;

@@ -19,17 +19,6 @@ const prisma = new PrismaClient();
 
 import { sendMail } from "../middleware/sendMail";
 
-//functions
-const transport = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
-  tls: {
-    rejectUnauthorized: false,
-  },
-});
 //signup
 export const signupBody = zod.object({
   name: zod.string().min(1).max(100),
@@ -37,7 +26,6 @@ export const signupBody = zod.object({
   password: zod.string().min(6).max(100),
   confirmPassword: zod.string().min(6).max(100),
 });
-//end email
 router.post(
   "/signup",
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
@@ -102,16 +90,34 @@ router.post(
     }
     const token = jwt.sign({ userId: existingUser.id }, JWT_SECRET);
     const emailVerified = existingUser.emailVerified;
-
-    if (!emailVerified) {
-        req.body.subject="NIT Srinagar-Verify your email",
+    const isRejected = existingUser.isRejected;
+    if(isRejected){
+      req.body.subject = "NIT Srinagar-Your application is rejected",
         req.body.email = existingUser.email,
-        req.body.html= `<h1>${existingUser.name}! welcome to the alumini network of NIT Srinagar</h1>
+        req.body.html = `<h1>${existingUser.name}! Please Re-apply through the following link.</h1>
             <h4>Click on the link below to verify your email</h4>
-            <a href="${FRONTEND_URL}/verify-email-and-complete-profile?token=${token}&email=${existingUser.email}">Verify Email and complete your profile </a>`
-        req.body.message= "Email not verified"
-        next();
-        return;
+            <a href="${FRONTEND_URL}/verify-email-and-complete-profile?token=${token}&email=${existingUser.email}">Verify Email and complete your profile </a>`;
+      req.body.message = "Email not verified Varify it first";  
+      next();
+      return;
+    }
+    if(!existingUser.accountVerified){
+      req.body.subject = "NIT Srinagar-Your application is under Process",
+        req.body.email = existingUser.email,
+        req.body.html = `<h1>${existingUser.name}! Please wait till our Admin verifys your profile</h1>`;
+      req.body.message = "Email not verified Varify it first"; 
+      next();
+      return;
+    }
+    if (!emailVerified) {
+      req.body.subject = "NIT Srinagar-Verify your email",
+        req.body.email = existingUser.email,
+        req.body.html = `<h1>${existingUser.name}! welcome to the alumini network of NIT Srinagar</h1>
+            <h4>Click on the link below to verify your email</h4>
+            <a href="${FRONTEND_URL}/verify-email-and-complete-profile?token=${token}&email=${existingUser.email}">Verify Email and complete your profile </a>`;
+      req.body.message = "Email not verified Varify it first";
+      next();
+      return;
     }
     const hashedPassword = existingUser.password;
     const password = req.body.password;
@@ -122,16 +128,17 @@ router.post(
     res.cookie("token", token);
     res.send("Logged in!");
     return;
-  }, sendMail
+  },
+  sendMail
 );
 
-router.get('/logout', async (req:Request, res:Response)=>{
-    res.clearCookie("token");
-    res.json({
-        message:"Logged out"
-    });
-    return;
-})
+router.get("/logout", async (req: Request, res: Response) => {
+  res.clearCookie("token");
+  res.json({
+    message: "Logged out",
+  });
+  return;
+});
 
 //verify the email to prevent email spoofing
 // verifyemail-and-profile-complete?token=asdffccfg123&email=abc@gmail.com
@@ -222,7 +229,7 @@ router.post(
 //send mail
 router.get(
   "/forget-password",
-  async (req: Request, res: Response, next:NextFunction): Promise<any> => {
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const email = req.query.email;
     if (!email) {
       return res.status(400).json({ error: "Invalid request" });
@@ -237,64 +244,69 @@ router.get(
       return res.status(400).json({ error: "Email not found" });
     }
     const token = jwt.sign({ userId: user.id }, JWT_SECRET);
-    req.body.subject = "NIT Srinagar Alumini-Change your Password",
-    req.body.email = user.email,
-    req.body.html = `<h1>${user.name}! welcome to the alumini network of NIT Srinagar</h1>
+    (req.body.subject = "NIT Srinagar Alumini-Change your Password"),
+      (req.body.email = user.email),
+      (req.body.html = `<h1>${user.name}! welcome to the alumini network of NIT Srinagar</h1>
             <h4>Click on the link below to Change your password</h4>
-            <a href="${FRONTEND_URL}/forgetpassword?token=${token}&email=${user.email}">Change Password </a>`,
-    req.body.message = "Mail sent for Password Rest"
+            <a href="${FRONTEND_URL}/forgetpassword?token=${token}&email=${user.email}">Change Password </a>`),
+      (req.body.message = "Mail sent for Password Rest");
     next();
     return;
-  }, sendMail
+  },
+  sendMail
 );
-router.post("/reset-password", async (req: Request, res: Response):Promise<any> => {
+router.post(
+  "/reset-password",
+  async (req: Request, res: Response): Promise<any> => {
     const { token, email } = req.query;
     const { newPassword, confirmNewPassword } = req.body;
 
     if (!token || !email) {
-        return res.status(400).json({
-            message: "Invalid query parameters. 'token' and 'email' are required.",
-        });
+      return res.status(400).json({
+        message: "Invalid query parameters. 'token' and 'email' are required.",
+      });
     }
 
     if (!newPassword || !confirmNewPassword) {
-        return res.status(400).json({
-            message: "Invalid body parameters. 'newPassword' and 'confirmNewPassword' are required.",
-        });
+      return res.status(400).json({
+        message:
+          "Invalid body parameters. 'newPassword' and 'confirmNewPassword' are required.",
+      });
     }
 
     if (newPassword !== confirmNewPassword) {
-        return res.status(400).json({
-            message: "New Password and Confirm New Password do not match.",
-        });
+      return res.status(400).json({
+        message: "New Password and Confirm New Password do not match.",
+      });
     }
     const user = await prisma.user.findFirst({
-        where: {
-            email: email as string,
-            emailVerified: true,
-        },
+      where: {
+        email: email as string,
+        emailVerified: true,
+      },
     });
     if (!user || !user.emailVerified) {
-        return res.status(404).json({
-            message: "User not found or email not verified.",
-        });
+      return res.status(404).json({
+        message: "User not found or email not verified.",
+      });
     }
     const newHashedPassword = await bcrypt.hash(newPassword, 10);
 
-        
-        const updatedUser = await prisma.user.update({
-            where: { email: email as string },
-            data: { password: newHashedPassword },
-        });
-        if(!updatedUser){
-            return res.status(500).json({
-                message: "An error occurred while resetting the password. Please try again later.",
-            });
-        }
-        return res.status(200).json({
-            message: `Password changed successfully for ${updatedUser.email}.`,
-        });
-});
+    const updatedUser = await prisma.user.update({
+      where: { email: email as string },
+      data: { password: newHashedPassword },
+    });
+    if (!updatedUser) {
+      return res.status(500).json({
+        message:
+          "An error occurred while resetting the password. Please try again later.",
+      });
+    }
+    return res.status(200).json({
+      message: `Password changed successfully for ${updatedUser.email}.`,
+    });
+  }
+);
 //update info route
 
 export default router;

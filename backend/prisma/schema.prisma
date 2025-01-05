@@ -31,6 +31,7 @@ model User {
   instagram String?
   emailVerified Boolean @default(false)
   accountVerified Boolean @default(false)
+  isRejected Boolean @default(false)
   phoneVarified Boolean @default(false)
 
   createdAt DateTime @default(now())
