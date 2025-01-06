@@ -36,5 +36,11 @@ router.post(
     return;
   }
 );
+router.get('/logout', (req: Request, res: Response) => {
+    res.clearCookie('token');
+    res.clearCookie('login');
+    res.status(200).send('Logged out!');
+    return;
+})
 
 export default router;
