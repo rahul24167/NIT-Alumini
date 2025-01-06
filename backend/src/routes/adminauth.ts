@@ -9,8 +9,6 @@ if (!JWT_SECRET) {
   process.exit(1);
 }
 
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
 
 //signin
 const signinBody = zod.object({
@@ -33,12 +31,10 @@ router.post(
 
     const token = jwt.sign({ adminEmail: req.body.email}, JWT_SECRET);
     res.cookie("token", token);
-    res.send("Logged in!");
+    res.cookie('login','true');
+    res.status(200).send("Logged in!");
     return;
   }
 );
-
-//create a new admin route
-//update info
 
 export default router;

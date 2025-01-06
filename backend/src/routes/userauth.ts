@@ -126,7 +126,8 @@ router.post(
       return res.status(400).json({ error: "Wrong password" });
     }
     res.cookie("token", token);
-    res.send("Logged in!");
+    res.cookie('login','true');
+    res.status(200).send("Logged in!");
     return;
   },
   sendMail
@@ -134,7 +135,8 @@ router.post(
 
 router.get("/logout", async (req: Request, res: Response) => {
   res.clearCookie("token");
-  res.json({
+  res.clearCookie('login');
+  res.status(200).json({
     message: "Logged out",
   });
   return;

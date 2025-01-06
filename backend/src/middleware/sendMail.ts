@@ -32,7 +32,7 @@ export const sendMail = (req: Request, res: Response) => {
       console.log("Email sent: " + info.response);
     }
   });
-  res.json({
+  res.status(200).json({
         message: message,
       });
   return;
