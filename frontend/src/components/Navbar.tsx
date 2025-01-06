@@ -5,13 +5,13 @@ interface NavbarProps {
   className: string;
 }
 const Navbar = ({ className }: NavbarProps) => {
-  const [cookie, setCookie] = useState(document.cookie);
+  const [cookie] = useState(document.cookie.split("; ") 
+  .find((row) => row.startsWith("login="))?.split("=")[1]);
   const navigate = useNavigate();
   const logoutHandler = async () => {
     try {
-      const response = await axios.get("/api/logout");
+      const response = await axios.get("/api/logout",{withCredentials:true});
       if (response.status === 200) {
-        setCookie(document.cookie);
         console.log("Logout successful");
       }
     } catch (error) {
