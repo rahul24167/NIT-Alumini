@@ -1,16 +1,33 @@
 import { useEffect, useState } from "react";
+import { useDebounce } from "../hooks/useDebounce";
 
 const Dashboard = () => {
   const [filterVisible, setFilterVisible] = useState(false);
   const [name, setName] = useState("");
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(1); //will be used soon in the last diiv
   const [searchByBatchs, setSearchByBatchs] = useState<number[]>([]);
   const [searchByDepartments, setSearchByDepartments] = useState<string[]>([]);
   const [searchByCourses, setSearchByCourses] = useState<string[]>([]);
+  const [fetchedUsers, setFetchedUsers] = useState<Object[]>([])
 
+
+  const fetchUsers = async() => {
+    const response = await axios.post<{ data: Object[] }>(`api/v1/user/dashboard/users?name=${name}&page=${page}`, {searchByBatchs, searchByDepartments, searchByCourses})
+    setFetchedUsers(response.data.data)
+
+  }
+  useDebounce(fetchUsers,[name, page, searchByBatchs, searchByDepartments, searchByCourses],500)
+
+
+  console.log(name,searchByBatchs,searchByCourses,searchByDepartments)
   useEffect(() => {
-    // fetch and show the users you fetched
-    console.log(name,searchByBatchs,searchByCourses,searchByDepartments)
+    let timerId= setTimeout(()=>{
+      // fetching
+    },500)
+    
+    return ()=>{
+      clearTimeout(timerId)
+    }
   }, [name, page, searchByBatchs, searchByDepartments, searchByCourses]);
 
   const batchs = Array.from({ length: 2020 - 1960 + 1 }, (_, i) => 1960 + i);
@@ -57,7 +74,6 @@ const Dashboard = () => {
     <>
       <div>
         <label htmlFor="name">Search here</label>
-        {/* onChange={afunction to search like amozon } */}
         <input
           type="text"
           id="name"
@@ -147,6 +163,11 @@ const Dashboard = () => {
             ))}
           </fieldset>
         </form>
+      </div>
+      <div>
+        {fetchedUsers.map((user, index) => (
+          <div key={index}>{JSON.stringify(user)}</div>
+        ))}
       </div>
       <div>{/* page navigation prv,1,2,3,next */}</div>
     </>
