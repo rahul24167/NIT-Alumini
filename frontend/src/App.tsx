@@ -12,6 +12,7 @@ import Signin from './pages/Signin'
 import ErrorPage from './pages/ErrorPage';
 import Dashboard from './pages/Dashboard'
 import AdminSignin from './pages/AdminSignin';
+import AdminDashboard from './pages/AdminDashboard';
 import RootLayout from './layouts/RootLayout'
 
 const router = createBrowserRouter(
@@ -21,8 +22,8 @@ const router = createBrowserRouter(
       <Route path="signup" element={<Signup />} />
       <Route path="signin" element={<Signin />} />
       <Route path ="dashboard" element={<Dashboard/>}/>
-      <Route path ="adminsignin" element={<AdminSignin/>}/>
-
+      <Route path ="admin/signin" element={<AdminSignin/>}/>
+      <Route path='admin/dashboard' element={<AdminDashboard/>}/>
       {/* error page */}
       <Route path="*" element={<ErrorPage/>} />
     </Route>

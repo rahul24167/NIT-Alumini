@@ -8,26 +8,31 @@ const Dashboard = () => {
   const [searchByBatchs, setSearchByBatchs] = useState<number[]>([]);
   const [searchByDepartments, setSearchByDepartments] = useState<string[]>([]);
   const [searchByCourses, setSearchByCourses] = useState<string[]>([]);
-  const [fetchedUsers, setFetchedUsers] = useState<Object[]>([])
+  const [fetchedUsers, setFetchedUsers] = useState<Object[]>([]);
 
-
-  const fetchUsers = async() => {
-    const response = await axios.post<{ data: Object[] }>(`api/v1/user/dashboard/users?name=${name}&page=${page}`, {searchByBatchs, searchByDepartments, searchByCourses})
-    setFetchedUsers(response.data.data)
-
-  }
-  useDebounce(fetchUsers,[name, page, searchByBatchs, searchByDepartments, searchByCourses],500)
-
-
-  console.log(name,searchByBatchs,searchByCourses,searchByDepartments)
+  const fetchUsers = async () => {
+    const response = await axios.post<{ data: Object[] }>(
+      `api/v1/user/dashboard/users?name=${name}&page=${page}`,
+      { searchByBatchs, searchByDepartments, searchByCourses }
+    );
+    setFetchedUsers(response.data.data);
+  };
+  const changePage = ({ change }: any) => {
+    setPage((prev) => prev + change);
+  };
+  useDebounce(
+    fetchUsers,
+    [name, page, searchByBatchs, searchByDepartments, searchByCourses],
+    500
+  );
   useEffect(() => {
-    let timerId= setTimeout(()=>{
+    let timerId = setTimeout(() => {
       // fetching
-    },500)
-    
-    return ()=>{
-      clearTimeout(timerId)
-    }
+    }, 500);
+
+    return () => {
+      clearTimeout(timerId);
+    };
   }, [name, page, searchByBatchs, searchByDepartments, searchByCourses]);
 
   const batchs = Array.from({ length: 2020 - 1960 + 1 }, (_, i) => 1960 + i);
@@ -69,7 +74,6 @@ const Dashboard = () => {
   const togglefilter = () => {
     setFilterVisible((curr) => !curr);
   };
-
   return (
     <>
       <div>
@@ -147,18 +151,22 @@ const Dashboard = () => {
             {Object.entries(courses).map(([id, courseName]) => (
               <label key={id} htmlFor={`course-${id}`}>
                 {courseName}
-                <input id={`course-${id}`} type="checkbox" onChange={(e) => {
-                        if (e.target.checked) {
-                          setSearchByCourses((prevItems) => [
-                            ...prevItems,
-                            courseName
-                          ]);
-                        } else {
-                          setSearchByCourses((prevItems) =>
-                            prevItems.filter((i) => i !== courseName)
-                          );
-                        }
-                      }}/>
+                <input
+                  id={`course-${id}`}
+                  type="checkbox"
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setSearchByCourses((prevItems) => [
+                        ...prevItems,
+                        courseName,
+                      ]);
+                    } else {
+                      setSearchByCourses((prevItems) =>
+                        prevItems.filter((i) => i !== courseName)
+                      );
+                    }
+                  }}
+                />
               </label>
             ))}
           </fieldset>
@@ -169,7 +177,13 @@ const Dashboard = () => {
           <div key={index}>{JSON.stringify(user)}</div>
         ))}
       </div>
-      <div>{/* page navigation prv,1,2,3,next */}</div>
+      <div>
+        <button onClick={() => changePage(-1)}>Previous Page</button>
+        <button onClick={() => changePage(1)}>{page + 1}</button>
+        <button onClick={() => changePage(2)}>{page + 2}</button>
+        <button onClick={() => changePage(3)}>{page + 3}</button>
+        <button onClick={() => changePage(1)}>Next Page</button>
+      </div>
     </>
   );
 };
