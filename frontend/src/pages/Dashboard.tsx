@@ -83,6 +83,7 @@ const Dashboard = () => {
           id="name"
           name="name"
           placeholder="Rahul"
+          value={name}
           onChange={(e) => {
             setName(e.target.value);
           }}
