@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 
 const Dashboard = () => {
@@ -25,15 +25,6 @@ const Dashboard = () => {
     [name, page, searchByBatchs, searchByDepartments, searchByCourses],
     500
   );
-  useEffect(() => {
-    let timerId = setTimeout(() => {
-      // fetching
-    }, 500);
-
-    return () => {
-      clearTimeout(timerId);
-    };
-  }, [name, page, searchByBatchs, searchByDepartments, searchByCourses]);
 
   const batchs = Array.from({ length: 2020 - 1960 + 1 }, (_, i) => 1960 + i);
   const departments = {

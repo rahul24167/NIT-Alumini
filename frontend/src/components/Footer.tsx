@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 const Footer = () => {
   const navigate = useNavigate();
   const handelClick = () => {
-    navigate("/adminsignin");
+    navigate("/admin/signin");
   };
   return (
     <div className="bg-blue-400">
