@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 
 const AdminDashboard = () => {
@@ -41,8 +41,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="bg-slate-500">
-      AdminDashboard
-      <aside>filters</aside>
+      <aside className="bg-green-600">filter </aside>
       <div>
         <label htmlFor="name">
           Search by name

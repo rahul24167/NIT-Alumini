@@ -7,7 +7,7 @@ if (!JWT_SECRET) {
 }
 interface JwtPayloadWithUserId {
   userId?: string;
-  adminId?: string;
+  adminEmail?: string;
 }
 export const authMiddleware = (
   req: Request,
@@ -21,13 +21,13 @@ export const authMiddleware = (
   const token = req.cookies.token;
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
-    const { userId, adminId } = decoded as JwtPayloadWithUserId;
+    const { userId, adminEmail } = decoded as JwtPayloadWithUserId;
     if (userId) {
       req.body.userId = userId;
       next();
       return;
-    } else if (adminId) {
-      req.body.adminId = adminId;
+    } else if (adminEmail) {
+      req.body.adminEmail = adminEmail;
       next();
       return;
     } else {
