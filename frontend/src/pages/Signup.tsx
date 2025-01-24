@@ -8,7 +8,7 @@ const Signup = () => {
   const [result, setResult] = useState(false)
   const signupHandler = async (e:React.FormEvent)=>{
     e.preventDefault();
-    const response= await axios.post('http://localhost:5000/api/v1/user/auth/signup', {name, email, password, confirmPassword},{withCredentials:true})
+    const response= await axios.post('http://treehouse.software/api/v1/user/auth/signup', {name, email, password, confirmPassword},{withCredentials:true})
     if (response.status === 200){
       console.log(response.data)
       setResult(true)

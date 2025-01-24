@@ -17,7 +17,7 @@ const Navbar = ({ className }: NavbarProps) => {
   const navigate = useNavigate();
   const logoutHandler = async () => {
     try {
-      const response = await axios.get("/api/logout", {
+      const response = await axios.get("http://treehouse.software/api/logout", {
         withCredentials: true,
       });
       if (response.status === 200) {
