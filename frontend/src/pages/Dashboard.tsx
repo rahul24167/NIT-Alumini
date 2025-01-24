@@ -1,17 +1,30 @@
 import { useState } from "react";
+
+ // Add other properties as needed
 import { useDebounce } from "../hooks/useDebounce";
+import UserCard from "../components/UserCard";
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  photo?: string;
+  course?: string;
+  department?: string;
+  batch?: string;
+}
 //route protection for the dashboard
 const Dashboard = () => {
+  const [fetchedUsers, setFetchedUsers] = useState<User[]>([]);
   const [filterVisible, setFilterVisible] = useState(false);
   const [name, setName] = useState("");
   const [page, setPage] = useState(1); //will be used soon in the last diiv
   const [searchByBatchs, setSearchByBatchs] = useState<number[]>([]);
   const [searchByDepartments, setSearchByDepartments] = useState<string[]>([]);
   const [searchByCourses, setSearchByCourses] = useState<string[]>([]);
-  const [fetchedUsers, setFetchedUsers] = useState<Object[]>([]);
+  // const [fetchedUsers, setFetchedUsers] = useState<Object[]>([]);
 
   const fetchUsers = async () => {
-    const response = await axios.post<{ data: Object[] }>(
+    const response = await axios.post<{ data: User[] }>(
       `api/v1/user/dashboard/users?name=${name}&page=${page}`,
       { searchByBatchs, searchByDepartments, searchByCourses }
     );
@@ -174,14 +187,24 @@ const Dashboard = () => {
 
   {/* Fetched Users */}
   <div className="p-4 bg-gray-100">
+  <UserCard user={{
+  id: 1,
+  name: "Rahul Sharma",
+  email: "rahul.sharma@example.com",
+  photo: "https://via.placeholder.com/150", // Replace with an actual URL if available
+  course: "Computer Science",
+  department: "Engineering",
+  batch: "2025",
+}}/>
     <h2 className="text-lg font-semibold mb-4">Fetched Users</h2>
     <div className="space-y-2">
-      {fetchedUsers.map((user, index) => (
+      {fetchedUsers.map((user) => (
         <div
-          key={index}
+          key={user.id}
           className="bg-white p-2 border border-gray-300 rounded-md shadow-sm"
         >
-          {JSON.stringify(user)}
+          <UserCard user={user} />
+          
         </div>
       ))}
     </div>

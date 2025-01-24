@@ -1,5 +1,16 @@
 import { useState } from "react";
 import { useDebounce } from "../hooks/useDebounce";
+import UserCard from "../components/UserCard";
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  photo?: string;
+  course?: string;
+  department?: string;
+  batch?: string;
+}
 //route protection for the admin dashboard
 const AdminDashboard = () => {
   const [filterVisible, setFilterVisible] = useState(false);
@@ -11,10 +22,10 @@ const AdminDashboard = () => {
   const [searchByBatchs, setSearchByBatchs] = useState<number[]>([]);
   const [searchByDepartments, setSearchByDepartments] = useState<string[]>([]);
   const [searchByCourses, setSearchByCourses] = useState<string[]>([]);
-  const [fetchedUsers, setFetchedUsers] = useState<Object[]>([]);
+  const [fetchedUsers, setFetchedUsers] = useState<User[]>([]);
 
   const fetchUsers = async () => {
-    const response = await axios.post<{ data: Object[] }>(
+    const response = await axios.post<{ data: User[] }>(
       `api/v1/admin/dashboard/users?allUser=${allUser}name=${name}&page=${page}&accountVerified=${accountVerified}&isRejected=${isRejected}`,
       { searchByBatchs, searchByDepartments, searchByCourses }
     );
@@ -279,11 +290,15 @@ const AdminDashboard = () => {
 
   {/* User Results */}
   <div className="mt-6">
-    {fetchedUsers.map((user, index) => (
-      <div key={index} className="bg-white p-4 rounded-lg shadow mb-4">
-        {JSON.stringify(user)}
-      </div>
-    ))}
+  {fetchedUsers.map((user) => (
+        <div
+          key={user.id}
+          className="bg-white p-2 border border-gray-300 rounded-md shadow-sm"
+        >
+          <UserCard user={user} />
+          
+        </div>
+      ))}
   </div>
 </div>
 
