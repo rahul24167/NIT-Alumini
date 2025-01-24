@@ -61,7 +61,7 @@ router.post(
     req.body.email = email;
     req.body.html = `<h1>${name}! welcome to the alumini network of NIT Srinagar</h1>
   <h4>Click on the link below to verify your email</h4>
-  <a href="${FRONTEND_URL}/verify-email-and-complete-profile?token=${token}&email=${email}">Verify Email and complete your profile </a>`;
+  <a href="${FRONTEND_URL}/signupform?token=${token}&email=${email}">Verify Email and complete your profile </a>`;
     req.body.message = "email sent. check your spam folder ";
     next();
     return;

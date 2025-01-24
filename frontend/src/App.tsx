@@ -8,6 +8,7 @@ import {
 
 import LandingPage from './pages/LandingPage'
 import Signup from './pages/Signup'
+import SignupForm from './pages/SignupForm'
 import Signin from './pages/Signin'
 import ErrorPage from './pages/ErrorPage';
 import Dashboard from './pages/Dashboard'
@@ -20,6 +21,7 @@ const router = createBrowserRouter(
     <Route path="/" element={<RootLayout />}>
       <Route index element={<LandingPage />} /> 
       <Route path="signup" element={<Signup />} />
+      <Route path="signupform" element={<SignupForm />} />
       <Route path="signin" element={<Signin />} />
       <Route path ="dashboard" element={<Dashboard/>}/>
       <Route path ="admin">
