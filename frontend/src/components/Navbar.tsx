@@ -35,21 +35,37 @@ const Navbar = ({ className }: NavbarProps) => {
     navigate("/signup");
   };
   return (
-    <div className={className}>
-      Navbar
-      <div>
-        {cookie ? (
-          <div>
-            <button onClick={logoutHandler}>signout</button>
-          </div>
-        ) : (
-          <div>
-            <button onClick={navigateSignin}>signin </button>
-            <button onClick={navigateSignup}>signup</button>
-          </div>
-        )}
-      </div>
+    <div className={`flex items-center justify-between px-6 py-4 bg-gray-800 text-white ${className}`}>
+    <div className="text-xl font-bold">NIT Srinagar Alumini</div>
+    <div>
+      {cookie ? (
+        <div>
+          <button
+            onClick={logoutHandler}
+            className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition"
+          >
+            Sign Out
+          </button>
+        </div>
+      ) : (
+        <div className="flex space-x-4">
+          <button
+            onClick={navigateSignin}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition"
+          >
+            Sign In
+          </button>
+          <button
+            onClick={navigateSignup}
+            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md transition"
+          >
+            Sign Up
+          </button>
+        </div>
+      )}
     </div>
+  </div>
+  
   );
 };
 

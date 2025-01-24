@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useDebounce } from "../hooks/useDebounce";
-
+//route protection for the dashboard
 const Dashboard = () => {
   const [filterVisible, setFilterVisible] = useState(false);
   const [name, setName] = useState("");
@@ -67,116 +67,161 @@ const Dashboard = () => {
   };
   return (
     <>
-      <div>
-        <label htmlFor="name">Search here</label>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Rahul"
-          value={name}
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-        />
-      </div>
-      <button onClick={togglefilter}>Filter</button>
-      <div className={`${filterVisible ? "visible" : "hidden"}`}>
-        {/* searchByBatchs=[], searchByDepartments=[], searchByCourses=[] */}
-        <form>
-          <fieldset>
-            <legend>Select Batches</legend>
-            <div className="flex flex-wrap">
-              {batchs.map((batch) => (
-                <div key={batch} className="block">
-                  <label htmlFor={`${batch}`}>
-                    {batch}
-                    <input
-                      id={`${batch}`}
-                      type="checkbox"
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSearchByBatchs((prevItems) => [
-                            ...prevItems,
-                            batch,
-                          ]);
-                        } else {
-                          setSearchByBatchs((prevItems) =>
-                            prevItems.filter((i) => i !== batch)
-                          );
-                        }
-                      }}
-                    />
-                  </label>
-                </div>
-              ))}
+  {/* Search Input */}
+  <div className="p-4 bg-gray-100 flex items-center gap-4">
+    <label htmlFor="name" className="text-lg font-semibold">
+      Search here:
+    </label>
+    <input
+      type="text"
+      id="name"
+      name="name"
+      placeholder="Rahul"
+      value={name}
+      onChange={(e) => setName(e.target.value)}
+      className="w-full max-w-sm p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
+    />
+    <button
+      onClick={togglefilter}
+      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+    >
+      Filter
+    </button>
+  </div>
+
+  {/* Filter Section */}
+  <div className={`p-4 bg-gray-50 shadow-md ${filterVisible ? "block" : "hidden"}`}>
+    <form>
+      {/* Batches */}
+      <fieldset className="mb-4">
+        <legend className="text-lg font-semibold mb-2">Select Batches</legend>
+        <div className="flex flex-wrap gap-4">
+          {batchs.map((batch) => (
+            <div key={batch} className="flex items-center">
+              <input
+                id={`${batch}`}
+                type="checkbox"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSearchByBatchs((prevItems) => [...prevItems, batch]);
+                  } else {
+                    setSearchByBatchs((prevItems) =>
+                      prevItems.filter((i) => i !== batch)
+                    );
+                  }
+                }}
+                className="mr-2"
+              />
+              <label htmlFor={`${batch}`}>{batch}</label>
             </div>
-          </fieldset>
-          <fieldset>
-            <legend>Select departments</legend>
-            {Object.entries(departments).map(
-              ([id, { shortName, fullName }]) => (
-                <label key={id} htmlFor={shortName}>
-                  {fullName}
-                  <input
-                    id={shortName}
-                    type="checkbox"
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setSearchByDepartments((prevItems) => [
-                          ...prevItems,
-                          fullName,
-                        ]);
-                      } else {
-                        setSearchByDepartments((prevItems) =>
-                          prevItems.filter((i) => i !== fullName)
-                        );
-                      }
-                    }}
-                  />
-                </label>
-              )
-            )}
-          </fieldset>
-          <fieldset>
-            <legend>Select Courses</legend>
-            {Object.entries(courses).map(([id, courseName]) => (
-              <label key={id} htmlFor={`course-${id}`}>
-                {courseName}
-                <input
-                  id={`course-${id}`}
-                  type="checkbox"
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setSearchByCourses((prevItems) => [
-                        ...prevItems,
-                        courseName,
-                      ]);
-                    } else {
-                      setSearchByCourses((prevItems) =>
-                        prevItems.filter((i) => i !== courseName)
-                      );
-                    }
-                  }}
-                />
-              </label>
-            ))}
-          </fieldset>
-        </form>
-      </div>
-      <div>
-        {fetchedUsers.map((user, index) => (
-          <div key={index}>{JSON.stringify(user)}</div>
-        ))}
-      </div>
-      <div>
-        <button onClick={() => changePage(-1)}>Previous Page</button>
-        <button onClick={() => changePage(1)}>{page + 1}</button>
-        <button onClick={() => changePage(2)}>{page + 2}</button>
-        <button onClick={() => changePage(3)}>{page + 3}</button>
-        <button onClick={() => changePage(1)}>Next Page</button>
-      </div>
-    </>
+          ))}
+        </div>
+      </fieldset>
+
+      {/* Departments */}
+      <fieldset className="mb-4">
+        <legend className="text-lg font-semibold mb-2">Select Departments</legend>
+        <div className="flex flex-wrap gap-4">
+          {Object.entries(departments).map(([id, { shortName, fullName }]) => (
+            <div key={id} className="flex items-center">
+              <input
+                id={shortName}
+                type="checkbox"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSearchByDepartments((prevItems) => [...prevItems, fullName]);
+                  } else {
+                    setSearchByDepartments((prevItems) =>
+                      prevItems.filter((i) => i !== fullName)
+                    );
+                  }
+                }}
+                className="mr-2"
+              />
+              <label htmlFor={shortName}>{fullName}</label>
+            </div>
+          ))}
+        </div>
+      </fieldset>
+
+      {/* Courses */}
+      <fieldset className="mb-4">
+        <legend className="text-lg font-semibold mb-2">Select Courses</legend>
+        <div className="flex flex-wrap gap-4">
+          {Object.entries(courses).map(([id, courseName]) => (
+            <div key={id} className="flex items-center">
+              <input
+                id={`course-${id}`}
+                type="checkbox"
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSearchByCourses((prevItems) => [...prevItems, courseName]);
+                  } else {
+                    setSearchByCourses((prevItems) =>
+                      prevItems.filter((i) => i !== courseName)
+                    );
+                  }
+                }}
+                className="mr-2"
+              />
+              <label htmlFor={`course-${id}`}>{courseName}</label>
+            </div>
+          ))}
+        </div>
+      </fieldset>
+    </form>
+  </div>
+
+  {/* Fetched Users */}
+  <div className="p-4 bg-gray-100">
+    <h2 className="text-lg font-semibold mb-4">Fetched Users</h2>
+    <div className="space-y-2">
+      {fetchedUsers.map((user, index) => (
+        <div
+          key={index}
+          className="bg-white p-2 border border-gray-300 rounded-md shadow-sm"
+        >
+          {JSON.stringify(user)}
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Pagination */}
+  <div className="p-4 flex justify-center gap-2 bg-gray-50">
+    <button
+      onClick={() => changePage(-1)}
+      className="bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400 transition"
+    >
+      Previous Page
+    </button>
+    <button
+      onClick={() => changePage(1)}
+      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+    >
+      {page + 1}
+    </button>
+    <button
+      onClick={() => changePage(2)}
+      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+    >
+      {page + 2}
+    </button>
+    <button
+      onClick={() => changePage(3)}
+      className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+    >
+      {page + 3}
+    </button>
+    <button
+      onClick={() => changePage(1)}
+      className="bg-gray-300 px-4 py-2 rounded-md hover:bg-gray-400 transition"
+    >
+      Next Page
+    </button>
+  </div>
+</>
+
   );
 };
 
