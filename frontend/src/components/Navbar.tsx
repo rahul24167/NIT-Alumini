@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../config";
 
 interface NavbarProps {
   className: string;
@@ -17,7 +18,7 @@ const Navbar = ({ className }: NavbarProps) => {
   const navigate = useNavigate();
   const logoutHandler = async () => {
     try {
-      const response = await axios.get("http://treehouse.software/api/logout", {
+      const response = await axios.get(`${BACKEND_URL}/api/logout`, {
         withCredentials: true,
       });
       if (response.status === 200) {

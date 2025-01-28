@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { BACKEND_URL } from "../config";
 
 const AdminSignin = () => {
   const [cookie] = useState(
@@ -21,7 +22,7 @@ const AdminSignin = () => {
   const signinHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     const response = await axios.post(
-      "http://localhost:5000/api/v1/admin/auth/signin",
+      `${BACKEND_URL}/api/v1/admin/auth/signin`,
       { email, password },
       { withCredentials: true }
     );

@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { BACKEND_URL } from "../config";
 // Add other properties as needed
 import { useDebounce } from "../hooks/useDebounce";
 import UserCard from "../components/UserCard";
@@ -31,7 +31,7 @@ const Dashboard = () => {
 
   const fetchUsers = async () => {
     const response = await axios.post<{ data: User[] }>(
-      `api/v1/user/dashboard/users?name=${name}&page=${page}`,
+      `${BACKEND_URL}api/v1/user/dashboard/users?name=${name}&page=${page}`,
       { searchByBatchs, searchByDepartments, searchByCourses }
     );
     setFetchedUsers(response.data.data);

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDebounce } from "../hooks/useDebounce";
 import UserCard from "../components/UserCard";
+import { BACKEND_URL } from "../config";
 
 interface User {
   id: number;
@@ -26,7 +27,7 @@ const AdminDashboard = () => {
 
   const fetchUsers = async () => {
     const response = await axios.post<{ data: User[] }>(
-      `api/v1/admin/dashboard/users?allUser=${allUser}name=${name}&page=${page}&accountVerified=${accountVerified}&isRejected=${isRejected}`,
+      `${BACKEND_URL}api/v1/admin/dashboard/users?allUser=${allUser}name=${name}&page=${page}&accountVerified=${accountVerified}&isRejected=${isRejected}`,
       { searchByBatchs, searchByDepartments, searchByCourses }
     );
     setFetchedUsers(response.data.data);

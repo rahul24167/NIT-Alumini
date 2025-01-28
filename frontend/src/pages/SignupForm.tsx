@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { BACKEND_URL } from "../config";
 
 const SignupForm: React.FC = () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -59,7 +60,7 @@ const SignupForm: React.FC = () => {
 
     try {
       const response = await axios.post(
-        `https://your-backend-url.com/api/v1?token=${token}&email=${email}`,
+        `${BACKEND_URL}/api/v1?token=${token}&email=${email}`,
         formDataToSend,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
