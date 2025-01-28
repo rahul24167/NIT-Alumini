@@ -11,8 +11,8 @@ const transport = nodemailer.createTransport({
   },
 });
 export const sendMail = (req: Request, res: Response) => {
-    const {subject, email, html, message} = req.body
-    if(!subject || !html || !email || !message){
+    const {subject, email, html, message, status} = req.body
+    if(!subject || !html || !email || !message || !status){
         res.json({
             message: "Body is invalid"
         });
@@ -32,7 +32,7 @@ export const sendMail = (req: Request, res: Response) => {
       console.log("Email sent: " + info.response);
     }
   });
-  res.status(200).json({
+  res.status(status).json({
         message: message,
       });
   return;

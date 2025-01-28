@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { BACKEND_URL } from "../config"
+import axios from "axios"
 
 const Signup = () => {
   const [name, setName] = useState('')

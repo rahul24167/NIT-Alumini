@@ -4,6 +4,42 @@ import axios from "axios";
 import { BACKEND_URL } from "../config";
 
 const SignupForm: React.FC = () => {
+  const batchs = Array.from({ length: 2020 - 1960 + 1 }, (_, i) => 1960 + i);
+  const departments = {
+    1: {
+      shortName: "CHEM",
+      fullName: "Chemical Engineering",
+    },
+    2: {
+      shortName: "CIVIL",
+      fullName: "Civil Engineering",
+    },
+    3: {
+      shortName: "CSE",
+      fullName: "Computer Science Engineering",
+    },
+    4: {
+      shortName: "EE",
+      fullName: "Electrical Engineering",
+    },
+    5: {
+      shortName: "ECE",
+      fullName: "Electronics and Communication Engineering",
+    },
+    6: {
+      shortName: "IT",
+      fullName: "Information Technology",
+    },
+    7: {
+      shortName: "MECH",
+      fullName: "Mechanical Engineering",
+    },
+    8: {
+      shortName: "MME",
+      fullName: "Metallurgy & Materials Engineering",
+    },
+  };
+  const courses = { 1: "B.Tech", 2: "M.Tech", 3: "Ph.D" };
   const urlParams = new URLSearchParams(window.location.search);
   const email = urlParams.get("email");
   const token = urlParams.get("token");
@@ -60,7 +96,7 @@ const SignupForm: React.FC = () => {
 
     try {
       const response = await axios.post(
-        `${BACKEND_URL}/api/v1?token=${token}&email=${email}`,
+        `${BACKEND_URL}/api/v1/user/auth/verify-email-and-complete-profile?token=${token}&email=${email}`,
         formDataToSend,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
@@ -107,6 +143,66 @@ const SignupForm: React.FC = () => {
             className="w-full border border-gray-300 p-2 rounded-md"
           />
         </div>
+        <fieldset className="mb-4">
+            <legend className="text-lg font-semibold mb-2">
+              Select Batches
+            </legend>
+            <div className="flex flex-wrap gap-4">
+              {batchs.map((batch) => (
+                <div key={batch} className="flex items-center">
+                  <input
+                    id={`${batch}`}
+                    type="checkbox"
+                    onChange={handleInputChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor={`${batch}`}>{batch}</label>
+                </div>
+              ))}
+            </div>
+          </fieldset>
+
+          {/* Departments */}
+          <fieldset className="mb-4">
+            <legend className="text-lg font-semibold mb-2">
+              Select Departments
+            </legend>
+            <div className="flex flex-wrap gap-4">
+              {Object.entries(departments).map(
+                ([id, { shortName, fullName }]) => (
+                  <div key={id} className="flex items-center">
+                    <input
+                      id={shortName}
+                      type="checkbox"
+                      onChange={handleInputChange}
+                      className="mr-2"
+                    />
+                    <label htmlFor={shortName}>{fullName}</label>
+                  </div>
+                )
+              )}
+            </div>
+          </fieldset>
+
+          {/* Courses */}
+          <fieldset className="mb-4">
+            <legend className="text-lg font-semibold mb-2">
+              Select Courses
+            </legend>
+            <div className="flex flex-wrap gap-4">
+              {Object.entries(courses).map(([id, courseName]) => (
+                <div key={id} className="flex items-center">
+                  <input
+                    id={`course-${id}`}
+                    type="checkbox"
+                    onChange={handleInputChange}
+                    className="mr-2"
+                  />
+                  <label htmlFor={`course-${id}`}>{courseName}</label>
+                </div>
+              ))}
+            </div>
+          </fieldset>
         {/* Course */}
         <div>
           <label className="block text-sm font-medium text-gray-700">

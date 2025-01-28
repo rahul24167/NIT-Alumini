@@ -84,6 +84,7 @@ router.post(
             <h4>Click on the link below to Login</h4>
             <a href="${FRONTEND_URL}/signin">LogIn now</a>`);
     req.body.message = "Email has been verified";
+    req.body.status = 200;
     next();
     return;
   },

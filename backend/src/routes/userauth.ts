@@ -4,7 +4,7 @@ import zod from "zod";
 import * as jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 const JWT_SECRET = process.env.JWT_SECRET;
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173/";
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 if (!JWT_SECRET) {
   console.error("JWT_SECRET is not defined");
   process.exit(1);
@@ -65,6 +65,7 @@ router.post(
   <h4>Click on the link below to verify your email</h4>
   <a href="${FRONTEND_URL}/signupform?token=${token}&email=${email}">Verify Email and complete your profile </a>`;
     req.body.message = "email sent. check your spam folder ";
+    req.body.status = 200;
     next();
     return;
   },
@@ -100,6 +101,7 @@ router.post(
             <h4>Click on the link below to verify your email</h4>
             <a href="${FRONTEND_URL}/verify-email-and-complete-profile?token=${token}&email=${existingUser.email}">Verify Email and complete your profile </a>`;
       req.body.message = "Email not verified Varify it first";  
+      req.body.status = 403;
       next();
       return;
     }
@@ -108,6 +110,7 @@ router.post(
         req.body.email = existingUser.email,
         req.body.html = `<h1>${existingUser.name}! Please wait till our Admin verifys your profile</h1>`;
       req.body.message = "Email not verified Varify it first"; 
+      req.body.status = 403;
       next();
       return;
     }
@@ -118,6 +121,7 @@ router.post(
             <h4>Click on the link below to verify your email</h4>
             <a href="${FRONTEND_URL}/verify-email-and-complete-profile?token=${token}&email=${existingUser.email}">Verify Email and complete your profile </a>`;
       req.body.message = "Email not verified Varify it first";
+      req.body.status = 403;
       next();
       return;
     }
@@ -163,22 +167,19 @@ router.post(
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const token = req.query.token;
     const email = req.query.email;
-    const file = req.file as Express.Multer.File;
-    if (!token || !email) {
+    const photo = req.file?.path;
+    if (!token || !email || !photo) {
       return res.status(400).json({ error: "Invalid request" });
     }
+    req.body.photo = photo;
     const parsedBody = profileBody.safeParse(req.body);
     if (!parsedBody.success) {
       return res.status(400).json({ error: "Invalid request body" });
     }
-    const uploadedImage = await uploadOnCloudinary(file.path);
-
+    const uploadedImage = await uploadOnCloudinary(photo);
     if (!uploadedImage) {
       return res.status(500).json({ success: false, message: "Image upload failed" });
     }
-
-    // Extract URL and proceed with user creation
-    //must have data arecourse, department, batch
     const dataToupdate: any = {
       photo: uploadedImage.secure_url,
       emailVerified: true,
@@ -257,12 +258,13 @@ router.get(
       return res.status(400).json({ error: "Email not found" });
     }
     const token = jwt.sign({ userId: user.id }, JWT_SECRET);
-    (req.body.subject = "NIT Srinagar Alumini-Change your Password"),
-      (req.body.email = user.email),
-      (req.body.html = `<h1>${user.name}! welcome to the alumini network of NIT Srinagar</h1>
+    req.body.subject = "NIT Srinagar Alumini-Change your Password",
+      req.body.email = user.email,
+      req.body.html = `<h1>${user.name}! welcome to the alumini network of NIT Srinagar</h1>
             <h4>Click on the link below to Change your password</h4>
-            <a href="${FRONTEND_URL}/forgetpassword?token=${token}&email=${user.email}">Change Password </a>`),
-      (req.body.message = "Mail sent for Password Rest");
+            <a href="${FRONTEND_URL}/forgetpassword?token=${token}&email=${user.email}">Change Password </a>`,
+      req.body.message = "Mail sent for Password Rest";
+      req.body.status = 200;
     next();
     return;
   },

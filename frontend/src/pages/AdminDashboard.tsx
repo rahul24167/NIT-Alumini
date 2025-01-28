@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import { useDebounce } from "../hooks/useDebounce";
 import UserCard from "../components/UserCard";
 import { BACKEND_URL } from "../config";
