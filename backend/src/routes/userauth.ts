@@ -18,6 +18,8 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 import { sendMail } from "../middleware/sendMail";
+import { upload } from "../middleware/multer";
+import { uploadOnCloudinary } from "../utills/cloudinary";
 
 //signup
 export const signupBody = zod.object({
@@ -145,7 +147,7 @@ router.get("/logout", async (req: Request, res: Response) => {
 //verify the email to prevent email spoofing
 // verifyemail-and-profile-complete?token=asdffccfg123&email=abc@gmail.com
 const profileBody = zod.object({
-  photo: zod.string().optional(),
+  photo: zod.string(),
   course: zod.string(),
   department: zod.string(),
   batch: zod.string(),
@@ -157,10 +159,11 @@ const profileBody = zod.object({
   instagram: zod.string().optional(),
 });
 router.post(
-  "/verify-email-and-complete-profile",
+  "/verify-email-and-complete-profile", upload.single("photo"),
   async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const token = req.query.token;
     const email = req.query.email;
+    const file = req.file as Express.Multer.File;
     if (!token || !email) {
       return res.status(400).json({ error: "Invalid request" });
     }
@@ -168,8 +171,16 @@ router.post(
     if (!parsedBody.success) {
       return res.status(400).json({ error: "Invalid request body" });
     }
+    const uploadedImage = await uploadOnCloudinary(file.path);
+
+    if (!uploadedImage) {
+      return res.status(500).json({ success: false, message: "Image upload failed" });
+    }
+
+    // Extract URL and proceed with user creation
     //must have data arecourse, department, batch
     const dataToupdate: any = {
+      photo: uploadedImage.secure_url,
       emailVerified: true,
       course: parsedBody.data.course,
       department: parsedBody.data.department,
