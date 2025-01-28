@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 const router = express.Router();
 import zod from "zod";
 import * as jwt from "jsonwebtoken";
-import bcrypt from "bcrypt";
+import { authMiddleware } from "../middleware/authMiddleware";
 const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) {
   console.error("JWT_SECRET is not defined");
@@ -36,7 +36,7 @@ router.post(
     return;
   }
 );
-router.get('/logout', (req: Request, res: Response) => {
+router.get('/logout', authMiddleware, (req: Request, res: Response) => {
     res.clearCookie('token');
     res.clearCookie('login');
     res.status(200).send('Logged out!');

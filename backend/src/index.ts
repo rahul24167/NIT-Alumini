@@ -4,7 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 dotenv.config();//.env should load before the children routes
 import rootRouter from './routes/index';
-const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173/";
 
 const app = express();
 app.use(cookieParser());

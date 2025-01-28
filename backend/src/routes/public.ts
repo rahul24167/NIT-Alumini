@@ -37,13 +37,16 @@ router.post("/users", async (req: Request, res: Response ):Promise<any>=> {
         where: filter,
         skip: 100*(parseInt(page as string)-1),
         take: 100,
+        orderBy: {
+            createdAt: "desc",
+        },
         select: {
             id: true,
             name: true,
             course: true,
             department: true,
             batch: true,
-        },
+        } 
     });
     res.status(200).json({ users });
     return;

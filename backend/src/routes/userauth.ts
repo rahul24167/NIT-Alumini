@@ -3,15 +3,14 @@ const router = express.Router();
 import zod from "zod";
 import * as jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import nodemailer from "nodemailer";
 const JWT_SECRET = process.env.JWT_SECRET;
-const FRONTEND_URL = process.env.BASE_URL;
+const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173/";
 if (!JWT_SECRET) {
   console.error("JWT_SECRET is not defined");
   process.exit(1);
 }
 if (!FRONTEND_URL) {
-  console.error("BASE_URL is not defined");
+  console.error("FRONTEND_URL is not defined");
   process.exit(1);
 }
 import { PrismaClient } from "@prisma/client";
@@ -20,6 +19,7 @@ const prisma = new PrismaClient();
 import { sendMail } from "../middleware/sendMail";
 import { upload } from "../middleware/multer";
 import { uploadOnCloudinary } from "../utills/cloudinary";
+import { authMiddleware } from "../middleware/authMiddleware";
 
 //signup
 export const signupBody = zod.object({
@@ -135,7 +135,7 @@ router.post(
   sendMail
 );
 
-router.get("/logout", async (req: Request, res: Response) => {
+router.get("/logout",authMiddleware, async (req: Request, res: Response) => {
   res.clearCookie("token");
   res.clearCookie('login');
   res.status(200).json({

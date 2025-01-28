@@ -3,10 +3,11 @@ const router = express.Router();
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 import { sendMail } from "../middleware/sendMail";
 import { PrismaClient } from "@prisma/client";
+import { authMiddleware } from "../middleware/authMiddleware";
 const prisma = new PrismaClient();
 
 //all,verified, not verified, rejected, not rejected
-router.post("/users", async (req: Request, res: Response): Promise<any> => {
+router.post("/users",authMiddleware, async (req: Request, res: Response): Promise<any> => {
   const {
     searchByBatchs = [],
     searchByDepartments = [],
@@ -62,7 +63,7 @@ router.post("/users", async (req: Request, res: Response): Promise<any> => {
 //verify a user
 router.post(
   "/verify-user",
-  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+  authMiddleware, async (req: Request, res: Response, next: NextFunction): Promise<any> => {
     const { userId } = req.body;
 
     if (!userId) {
@@ -90,7 +91,7 @@ router.post(
 );
 
 //rejected and un verify a user
-router.post("/reject", async (req: Request, res: Response): Promise<any> => {
+router.post("/reject",authMiddleware, async (req: Request, res: Response): Promise<any> => {
   const { userId } = req.body;
   if (!userId) {
     res.status(400).json({ error: "userId is required" });
