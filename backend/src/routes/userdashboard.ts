@@ -56,6 +56,16 @@ router.post(
       where: filter,
       skip: 100 * (parseInt(page as string) - 1),
       take: 100,
+      select: {
+        id: true,          
+        name: true,        
+        photo: true,
+        course: true,
+        department: true,
+        batch: true,
+        enroll: true,      
+        createdAt: true, 
+      }
     });
     res.status(200).json({ users });
     return;

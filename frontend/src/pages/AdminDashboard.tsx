@@ -12,6 +12,17 @@ interface User {
   course?: string;
   department?: string;
   batch?: string;
+  enroll?: string;
+  phone?: string;
+  linkdn?: string;
+  twitter?: string;
+  facebook?: string;
+  instagram?: string;
+  emailVerified?: boolean;
+  accuntVerified?: boolean;
+  isRejected?: boolean;
+  phoneVarified?: boolean;
+  createdAt?: Date;
 }
 //route protection for the admin dashboard
 const AdminDashboard = () => {
@@ -27,11 +38,14 @@ const AdminDashboard = () => {
   const [fetchedUsers, setFetchedUsers] = useState<User[]>([]);
 
   const fetchUsers = async () => {
-    const response = await axios.post<{ data: User[] }>(
-      `${BACKEND_URL}api/v1/admin/dashboard/users?allUser=${allUser}name=${name}&page=${page}&accountVerified=${accountVerified}&isRejected=${isRejected}`,
-      { searchByBatchs, searchByDepartments, searchByCourses }
+    const response = await axios.post(
+      `${BACKEND_URL}/api/v1/admin/dashboard/users?allUser=${allUser}&name=${name}&page=${page}&accountVerified=${accountVerified}&isRejected=${isRejected}`,
+      { searchByBatchs, searchByDepartments, searchByCourses },
+      { withCredentials: true }
     );
-    setFetchedUsers(response.data.data);
+    const data = response.data as { users: User[] };
+    console.log(data.users);
+    setFetchedUsers(data.users);
   };
   const changePage = ({ change }: any) => {
     if (page + change > 0) {
@@ -316,50 +330,6 @@ const AdminDashboard = () => {
 
       {/* User Results */}
       <div className="mt-6">
-        <UserCard
-          user={{
-            id: 1,
-            name: "Rahul Sharma",
-            email: "rahul.sharma@example.com",
-            photo: "https://via.placeholder.com/150", // Replace with an actual URL if available
-            course: "Computer Science",
-            department: "Engineering",
-            batch: "2025",
-          }}
-        />
-        <UserCard
-          user={{
-            id: 1,
-            name: "Rahul Sharma",
-            email: "rahul.sharma@example.com",
-            photo: "https://via.placeholder.com/150", // Replace with an actual URL if available
-            course: "Computer Science",
-            department: "Engineering",
-            batch: "2025",
-          }}
-        />
-        <UserCard
-          user={{
-            id: 1,
-            name: "Rahul Sharma",
-            email: "rahul.sharma@example.com",
-            photo: "https://via.placeholder.com/150", // Replace with an actual URL if available
-            course: "Computer Science",
-            department: "Engineering",
-            batch: "2025",
-          }}
-        />
-        <UserCard
-          user={{
-            id: 1,
-            name: "Rahul Sharma",
-            email: "rahul.sharma@example.com",
-            photo: "https://via.placeholder.com/150", // Replace with an actual URL if available
-            course: "Computer Science",
-            department: "Engineering",
-            batch: "2025",
-          }}
-        />
         {fetchedUsers.map((user) => (
           <div
             key={user.id}

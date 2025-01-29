@@ -7,5 +7,5 @@ export const useDebounce = (callback:()=>void, values: any[], delay:number=500) 
     return () => {
       clearTimeout(timerId);
     };
-  }, [values, delay]);
+  }, [...values, delay]);
 };

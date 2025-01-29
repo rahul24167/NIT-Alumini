@@ -23,9 +23,9 @@ router.post("/users",authMiddleware, async (req: Request, res: Response): Promis
     filter.accountVerified = false;
   }
   if (isRejected === "true") {
-    filter.rejected = true;
+    filter.isRejected = true;
   } else if (isRejected === "false") {
-    filter.rejected = false;
+    filter.isRejected = false;
   }
   if (req.query.name) {
     filter.name = {
@@ -55,8 +55,29 @@ router.post("/users",authMiddleware, async (req: Request, res: Response): Promis
     where: filter,
     skip: 100 * (parseInt(page as string) - 1),
     take: 100,
+    select: {
+      id: true,          
+      name: true,  
+      email: true,      
+      photo: true,
+      course: true,
+      department: true,
+      batch: true,
+      enroll: true, 
+      phone: true,
+      linkdn: true,
+      twitter: true,
+      facebook: true,
+      instagram: true,
+      emailVerified: true,
+      accountVerified: true,
+      isRejected: true,
+      phoneVarified: true,     
+      createdAt: true, 
+    },
   });
   res.status(200).json({ users });
+  console.log(users);
   return;
 });
 

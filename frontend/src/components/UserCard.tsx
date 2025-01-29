@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 interface User {
   id: number;
   name: string;
@@ -14,13 +13,17 @@ interface User {
   twitter?: string;
   facebook?: string;
   instagram?: string;
+  emailVerified?: boolean;
+  accuntVerified?: boolean;
+  isRejected?: boolean;
+  phoneVarified?: boolean;
+  createdAt?: Date;
 }
-
 interface UserCardProps {
   user: User;
 }
 
-const UserCard: React.FC<UserCardProps> = ({ user }) => {
+const UserCard: React.FC<UserCardProps> = ({user}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleCard = () => {

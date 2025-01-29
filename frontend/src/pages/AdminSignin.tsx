@@ -43,7 +43,7 @@ const AdminSignin = () => {
       );
       if (response.status === 200) {
         console.log(response.data);
-        navigate("/dashboard");
+        navigate("/admin/dashboard");
       }
       if (response.status === 403) {
         setResponseData(response.data as { message: string });

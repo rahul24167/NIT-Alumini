@@ -187,10 +187,6 @@ router.post(
       department: parsedBody.data.department,
       batch: parsedBody.data.batch,
     };
-    // optional data
-    if (parsedBody.data.photo) {
-      dataToupdate.photo = parsedBody.data.photo;
-    }
     if (parsedBody.data.enroll) {
       dataToupdate.enroll = parsedBody.data.enroll;
     }

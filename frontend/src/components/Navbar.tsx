@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../config";
+import axios from "axios";
 
 interface NavbarProps {
   className: string;
@@ -18,7 +19,7 @@ const Navbar = ({ className }: NavbarProps) => {
   const navigate = useNavigate();
   const logoutHandler = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/api/logout`, {
+      const response = await axios.get(`${BACKEND_URL}/api/v1/user/auth/logout`, {
         withCredentials: true,
       });
       if (response.status === 200) {

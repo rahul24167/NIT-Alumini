@@ -61,9 +61,17 @@ const SignupForm: React.FC = () => {
   const [image, setImage] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   setFormData({ ...formData, [e.target.name]: e.target.value });
+  // };
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
+  
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -100,7 +108,7 @@ const SignupForm: React.FC = () => {
         formDataToSend,
         { headers: { "Content-Type": "multipart/form-data" } }
       );
-      if(response.status === 200){
+      if (response.status === 200) {
         alert("Profile completed successfully!");
         navigate("/signin");
       }
@@ -129,122 +137,72 @@ const SignupForm: React.FC = () => {
             className="w-full border border-gray-300 p-2 rounded-md"
           />
         </div>
-        {/* Name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Name
-          </label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-            required
-            className="w-full border border-gray-300 p-2 rounded-md"
-          />
-        </div>
         <fieldset className="mb-4">
-            <legend className="text-lg font-semibold mb-2">
-              Select Batches
-            </legend>
-            <div className="flex flex-wrap gap-4">
-              {batchs.map((batch) => (
-                <div key={batch} className="flex items-center">
-                  <input
-                    id={`${batch}`}
-                    type="checkbox"
-                    onChange={handleInputChange}
-                    className="mr-2"
-                  />
-                  <label htmlFor={`${batch}`}>{batch}</label>
-                </div>
-              ))}
-            </div>
-          </fieldset>
+          <legend className="text-lg font-semibold mb-2">Select Batches</legend>
+          <div className="flex flex-wrap gap-4">
+            {batchs.map((batch) => (
+              <div key={batch} className="flex items-center">
+                <input
+                  id={`batch-${batch}`}
+                  type="radio"
+                  name="batch"
+                  value={batch.toString()}
+                  checked={formData.batch === batch.toString()}
+                  onChange={handleInputChange}
+                  className="mr-2"
+                />
+                <label htmlFor={`batch-${batch}`}>{batch}</label>
+              </div>
+            ))}
+          </div>
+        </fieldset>
 
-          {/* Departments */}
-          <fieldset className="mb-4">
-            <legend className="text-lg font-semibold mb-2">
-              Select Departments
-            </legend>
-            <div className="flex flex-wrap gap-4">
-              {Object.entries(departments).map(
-                ([id, { shortName, fullName }]) => (
-                  <div key={id} className="flex items-center">
-                    <input
-                      id={shortName}
-                      type="checkbox"
-                      onChange={handleInputChange}
-                      className="mr-2"
-                    />
-                    <label htmlFor={shortName}>{fullName}</label>
-                  </div>
-                )
-              )}
-            </div>
-          </fieldset>
-
-          {/* Courses */}
-          <fieldset className="mb-4">
-            <legend className="text-lg font-semibold mb-2">
-              Select Courses
-            </legend>
-            <div className="flex flex-wrap gap-4">
-              {Object.entries(courses).map(([id, courseName]) => (
+        {/* Departments */}
+        <fieldset className="mb-4">
+          <legend className="text-lg font-semibold mb-2">
+            Select Departments
+          </legend>
+          <div className="flex flex-wrap gap-4">
+            {Object.entries(departments).map(
+              ([id, { shortName, fullName }]) => (
                 <div key={id} className="flex items-center">
                   <input
-                    id={`course-${id}`}
-                    type="checkbox"
+                    id={shortName}
+                    type="radio"
+                    name="department"
+                    value={shortName}
+                    checked={formData.department === shortName}
                     onChange={handleInputChange}
                     className="mr-2"
                   />
-                  <label htmlFor={`course-${id}`}>{courseName}</label>
+                  <label htmlFor={shortName}>{fullName}</label>
                 </div>
-              ))}
-            </div>
-          </fieldset>
-        {/* Course */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Course
-          </label>
-          <input
-            type="text"
-            name="course"
-            value={formData.course}
-            onChange={handleInputChange}
-            required
-            className="w-full border border-gray-300 p-2 rounded-md"
-          />
-        </div>
-        {/* Department */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Department
-          </label>
-          <input
-            type="text"
-            name="department"
-            value={formData.department}
-            onChange={handleInputChange}
-            required
-            className="w-full border border-gray-300 p-2 rounded-md"
-          />
-        </div>
-        {/* Batch */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Batch
-          </label>
-          <input
-            type="text"
-            name="batch"
-            value={formData.batch}
-            onChange={handleInputChange}
-            required
-            className="w-full border border-gray-300 p-2 rounded-md"
-          />
-        </div>
+              )
+            )}
+          </div>
+        </fieldset>
+
+        {/* Courses */}
+        <fieldset className="mb-4">
+          <legend className="text-lg font-semibold mb-2">Select Courses</legend>
+          <div className="flex flex-wrap gap-4">
+            {Object.entries(courses).map(([id, courseName]) => (
+              <div key={id} className="flex items-center">
+                <input
+                  id={`course-${id}`}
+                  type="radio"
+                  name="course"
+                  value={courseName}
+                  checked={formData.course === courseName}
+                  onChange={handleInputChange}
+                  className="mr-2"
+                />
+                <label htmlFor={`course-${id}`}>{courseName}</label>
+              </div>
+            ))}
+          </div>
+        </fieldset>
+
         {/* Optional Fields */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
