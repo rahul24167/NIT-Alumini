@@ -1,4 +1,8 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { BACKEND_URL } from "@/config";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 interface User {
   id: number;
   name: string;
@@ -28,16 +32,40 @@ interface UserCardProps {
   askedBy?: AskedBy;
 }
 
-const UserCard: React.FC<UserCardProps> = ({
-  user,
-  askedBy = AskedBy.User,
-}) => {
+const UserCard: React.FC<UserCardProps> = ({ user, askedBy = AskedBy.User }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const [showDialog, setShowDialog] = useState(false);
+  const [actionType, setActionType] = useState<"verify" | "unverify">(user.accuntVerified ? "unverify" : "verify");
 
   const toggleCard = () => {
     setIsExpanded((prev) => !prev);
   };
 
+  const handleConfirm = async () => {
+    if (actionType === "verify") {
+      const response = await axios.get(`${BACKEND_URL}/api/v1/admin/dashboard/verify-user?userId=${user.id}&verify=true`,
+        { withCredentials: true }
+      );
+      if(response.status === 200){
+        user.accuntVerified = true;
+      }
+      console.log("Verifying user...");
+    } else {
+      const response = await axios.get(`${BACKEND_URL}/api/v1/admin/dashboard/verify-user?userId=${user.id}&verify=false`,
+        { withCredentials: true }
+      );
+      if(response.status === 200){
+        user.accuntVerified = false;
+      }
+      console.log("Unverifying user...");
+    }
+    setShowDialog(false); // Close the dialog
+  };
+  // const handleReject = async () => {
+    
+  //   console.log("Rejecting user...");
+  // }
+  
   return (
     <div
       onClick={toggleCard}
@@ -71,40 +99,36 @@ const UserCard: React.FC<UserCardProps> = ({
         <div className="mt-4 space-y-2">
           {user.email && (
             <p>
-              <span className="font-medium text-gray-700">Email:</span>{" "}
-              {user.email}
+              <span className="font-medium text-gray-700">Email:</span> {user.email}
             </p>
           )}
           {user.enroll && (
             <p>
-              <span className="font-medium text-gray-700">Enrollment:</span>{" "}
-              {user.enroll}
+              <span className="font-medium text-gray-700">Enrollment:</span> {user.enroll}
             </p>
           )}
           {user.phone && (
             <p>
-              <span className="font-medium text-gray-700">Phone:</span>{" "}
-              {user.phone}
+              <span className="font-medium text-gray-700">Phone:</span> {user.phone}
             </p>
           )}
           {user.course && (
             <p>
-              <span className="font-medium text-gray-700">Course:</span>{" "}
-              {user.course}
+              <span className="font-medium text-gray-700">Course:</span> {user.course}
             </p>
           )}
           {user.department && (
             <p>
-              <span className="font-medium text-gray-700">Department:</span>{" "}
-              {user.department}
+              <span className="font-medium text-gray-700">Department:</span> {user.department}
             </p>
           )}
           {user.batch && (
             <p>
-              <span className="font-medium text-gray-700">Batch:</span>{" "}
-              {user.batch}
+              <span className="font-medium text-gray-700">Batch:</span> {user.batch}
             </p>
           )}
+
+          {/* Social Links */}
           <div className="space-y-1">
             {user.linkdn && (
               <a
@@ -148,19 +172,49 @@ const UserCard: React.FC<UserCardProps> = ({
             )}
           </div>
 
+          {/* Admin Actions */}
           {askedBy === AskedBy.Admin && (
             <>
               {user.accuntVerified ? (
-                <div>Verified by Admin 
-                  <div>
-                    <button>UnVerify the user</button>
-                  </div>
+                <div>
+                  <p className="text-green-600">Verified by Admin</p>
+                  <Button
+                    variant="outline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActionType("unverify");
+                      setShowDialog(true);
+                    }}
+                  >
+                    Unverify the user
+                  </Button>
                 </div>
               ) : (
-                <div>User is not verified by Admin
-                  <div>
-                    <button>Verify the user</button>
-                  </div>
+                <div>
+                <div>
+                  <p className="text-red-600">User is not verified by Admin</p>
+                  <Button
+                    variant="default"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActionType("verify");
+                      setShowDialog(true);
+                    }}
+                  >
+                    Verify the user
+                  </Button>
+                </div>
+
+                {/* <div>
+                  <Button
+                    variant="outline"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
+                  >
+                    Reject the aplication of the user
+                  </Button>
+                </div> */}
                 </div>
               )}
             </>
@@ -178,6 +232,28 @@ const UserCard: React.FC<UserCardProps> = ({
           </button>
         </div>
       )}
+
+      {/* Confirmation Dialog */}
+      <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <h2 className="text-lg font-semibold">Confirm {actionType === "verify" ? "Verification" : "Unverification"}</h2>
+          </DialogHeader>
+          <p>
+            {actionType === "verify"
+              ? "Once a user is verified, their profile will be visible to other users and the public."
+              : "If you unverify the user, their profile will no longer be publicly visible."}
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDialog(false)}>
+              Cancel
+            </Button>
+            <Button variant="default" onClick={handleConfirm}>
+              Confirm
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

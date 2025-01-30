@@ -81,30 +81,39 @@ router.post("/users",authMiddleware, async (req: Request, res: Response): Promis
   return;
 });
 
-//verify a user
-router.post(
+//verify a user or unverify a user
+router.get(
   "/verify-user",
   authMiddleware, async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-    const { userId } = req.body;
+    const { userId, verify } = req.query;
+    let verificaton = true;
 
     if (!userId) {
       res.status(400).json({ error: " Inputs are required" });
       return;
     }
+    if(verify === "false"){
+      verificaton = false;
+    }
     const user = await prisma.user.update({
       where: {
-        id: parseInt(userId),
+        id: parseInt(userId as string),
       },
       data: {
-        accountVerified: true,
+        accountVerified: verificaton,
       },
     });
+    if(verify === "false"){
+      req.body.subject = "NIT Srinagar-Your Profile is Unverified by the admin";
+      (req.body.html = `<h1>${user.name}! You will not be able to login to your account </h1>`);
+      req.body.message = "Account has been verified";
+    }
     req.body.subject = "NIT Srinagar-Your Profile is Verifed now";
     (req.body.email = user.email),
       (req.body.html = `<h1>${user.name}! You can login now</h1>
             <h4>Click on the link below to Login</h4>
             <a href="${FRONTEND_URL}/signin">LogIn now</a>`);
-    req.body.message = "Email has been verified";
+    req.body.message = "Account has been verified";
     req.body.status = 200;
     next();
     return;
@@ -113,15 +122,15 @@ router.post(
 );
 
 //rejected and un verify a user
-router.post("/reject",authMiddleware, async (req: Request, res: Response): Promise<any> => {
-  const { userId } = req.body;
+router.get("/reject",authMiddleware, async (req: Request, res: Response): Promise<any> => {
+  const { userId } = req.query;
   if (!userId) {
     res.status(400).json({ error: "userId is required" });
     return;
   }
   await prisma.user.update({
     where: {
-      id: parseInt(userId),
+      id: parseInt(userId as string),
     },
     data: {
       accountVerified: false,
@@ -130,7 +139,7 @@ router.post("/reject",authMiddleware, async (req: Request, res: Response): Promi
   });
   const user = await prisma.user.update({
     where: {
-      id: parseInt(userId),
+      id: parseInt(userId as string),
     },
     data: {
       accountVerified: false,
