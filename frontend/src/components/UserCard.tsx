@@ -3,10 +3,10 @@ interface User {
   id: number;
   name: string;
   email: string;
-  photo?: string;
-  course?: string;
-  department?: string;
-  batch?: string;
+  photo: string;
+  course: string;
+  department: string;
+  batch: string;
   enroll?: string;
   phone?: string;
   linkdn?: string;
@@ -19,11 +19,19 @@ interface User {
   phoneVarified?: boolean;
   createdAt?: Date;
 }
+enum AskedBy {
+  User = "user",
+  Admin = "admin",
+}
 interface UserCardProps {
   user: User;
+  askedBy?: AskedBy;
 }
 
-const UserCard: React.FC<UserCardProps> = ({user}) => {
+const UserCard: React.FC<UserCardProps> = ({
+  user,
+  askedBy = AskedBy.User,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleCard = () => {
@@ -63,32 +71,38 @@ const UserCard: React.FC<UserCardProps> = ({user}) => {
         <div className="mt-4 space-y-2">
           {user.email && (
             <p>
-              <span className="font-medium text-gray-700">Email:</span> {user.email}
+              <span className="font-medium text-gray-700">Email:</span>{" "}
+              {user.email}
             </p>
           )}
           {user.enroll && (
             <p>
-              <span className="font-medium text-gray-700">Enrollment:</span> {user.enroll}
+              <span className="font-medium text-gray-700">Enrollment:</span>{" "}
+              {user.enroll}
             </p>
           )}
           {user.phone && (
             <p>
-              <span className="font-medium text-gray-700">Phone:</span> {user.phone}
+              <span className="font-medium text-gray-700">Phone:</span>{" "}
+              {user.phone}
             </p>
           )}
           {user.course && (
             <p>
-              <span className="font-medium text-gray-700">Course:</span> {user.course}
+              <span className="font-medium text-gray-700">Course:</span>{" "}
+              {user.course}
             </p>
           )}
           {user.department && (
             <p>
-              <span className="font-medium text-gray-700">Department:</span> {user.department}
+              <span className="font-medium text-gray-700">Department:</span>{" "}
+              {user.department}
             </p>
           )}
           {user.batch && (
             <p>
-              <span className="font-medium text-gray-700">Batch:</span> {user.batch}
+              <span className="font-medium text-gray-700">Batch:</span>{" "}
+              {user.batch}
             </p>
           )}
           <div className="space-y-1">
@@ -133,6 +147,24 @@ const UserCard: React.FC<UserCardProps> = ({user}) => {
               </a>
             )}
           </div>
+
+          {askedBy === AskedBy.Admin && (
+            <>
+              {user.accuntVerified ? (
+                <div>Verified by Admin 
+                  <div>
+                    <button>UnVerify the user</button>
+                  </div>
+                </div>
+              ) : (
+                <div>User is not verified by Admin
+                  <div>
+                    <button>Verify the user</button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
 
           {/* Show Less Button */}
           <button

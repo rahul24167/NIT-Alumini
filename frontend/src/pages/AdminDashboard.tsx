@@ -8,10 +8,10 @@ interface User {
   id: number;
   name: string;
   email: string;
-  photo?: string;
-  course?: string;
-  department?: string;
-  batch?: string;
+  photo: string;
+  course: string;
+  department: string;
+  batch: string;
   enroll?: string;
   phone?: string;
   linkdn?: string;
@@ -36,6 +36,10 @@ const AdminDashboard = () => {
   const [searchByDepartments, setSearchByDepartments] = useState<string[]>([]);
   const [searchByCourses, setSearchByCourses] = useState<string[]>([]);
   const [fetchedUsers, setFetchedUsers] = useState<User[]>([]);
+  enum AskedBy {
+    User = "user",
+    Admin = "admin",
+  }
 
   const fetchUsers = async () => {
     const response = await axios.post(
@@ -335,7 +339,7 @@ const AdminDashboard = () => {
             key={user.id}
             className="bg-white p-2 border border-gray-300 rounded-md shadow-sm"
           >
-            <UserCard user={user} />
+            <UserCard user={user} askedBy={AskedBy.Admin}/>
           </div>
         ))}
       </div>
