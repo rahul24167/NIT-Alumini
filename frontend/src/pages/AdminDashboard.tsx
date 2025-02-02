@@ -42,14 +42,13 @@ const AdminDashboard = () => {
   }
 
   const fetchUsers = async () => {
-    const response = await axios.post(
+    const response = await axios.post<{ users: User[] }>(
       `${BACKEND_URL}/api/v1/admin/dashboard/users?allUser=${allUser}&name=${name}&page=${page}&accountVerified=${accountVerified}&isRejected=${isRejected}`,
       { searchByBatchs, searchByDepartments, searchByCourses },
       { withCredentials: true }
     );
-    const data = response.data as { users: User[] };
-    console.log(data.users);
-    setFetchedUsers(data.users);
+    console.log(response.data.users);
+    setFetchedUsers(response.data.users);
   };
   const changePage = ({ change }: any) => {
     if (page + change > 0) {
@@ -146,9 +145,11 @@ const AdminDashboard = () => {
               }
               if (e.target.value === "verified") {
                 setAccountVerified(true);
+                setAllUser(false);
               }
               if (e.target.value === "notVerified") {
                 setAccountVerified(false);
+                setAllUser(false);
               }
             }}
             className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"

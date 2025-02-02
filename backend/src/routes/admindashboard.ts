@@ -4,6 +4,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 import { sendMail } from "../middleware/sendMail";
 import { PrismaClient } from "@prisma/client";
 import { authMiddleware } from "../middleware/authMiddleware";
+import { parse } from "path";
 const prisma = new PrismaClient();
 
 //all,verified, not verified, rejected, not rejected
@@ -13,18 +14,23 @@ router.post("/users",authMiddleware, async (req: Request, res: Response): Promis
     searchByDepartments = [],
     searchByCourses = [],
   } = req.body;
-  const { name, page, allUser, accountVerified, isRejected } = req.query;
+  const name = req.query.name;
+  const page = parseInt(req.query.page as string);
+  const allUser = req.query.allUser==="true";
+  const accountVerified = req.query.accountVerified==="true";
+  const isRejected = req.query.isRejected==="true";
+  console.log(typeof allUser,typeof accountVerified,typeof isRejected);
   //searchByDepartments, searchByCourses are arrays
   //perpage 100 users
   const filter: any = {};
-  if (!allUser && accountVerified === "true") {
+  if (!allUser && accountVerified) {
     filter.accountVerified = true;
-  } else if (!allUser && accountVerified === "false") {
+  } else if (!allUser && !accountVerified) {
     filter.accountVerified = false;
   }
-  if (isRejected === "true") {
+  if (isRejected) {
     filter.isRejected = true;
-  } else if (isRejected === "false") {
+  } else if (!isRejected) {
     filter.isRejected = false;
   }
   if (req.query.name) {
@@ -53,7 +59,7 @@ router.post("/users",authMiddleware, async (req: Request, res: Response): Promis
       createdAt: "desc", // Sort by createdAt descending
     },
     where: filter,
-    skip: 100 * (parseInt(page as string) - 1),
+    skip: 100 * (page - 1),
     take: 100,
     select: {
       id: true,          

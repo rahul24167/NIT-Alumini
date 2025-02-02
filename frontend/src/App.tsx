@@ -15,7 +15,7 @@ import Dashboard from './pages/Dashboard'
 import AdminSignin from './pages/AdminSignin';
 import AdminDashboard from './pages/AdminDashboard';
 import RootLayout from './layouts/RootLayout'
-//AdminDashboard(under progress)and Dashboard are to be tested 
+//Dashboard are to be tested 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<RootLayout />}>

@@ -63,11 +63,17 @@ router.post(
         course: true,
         department: true,
         batch: true,
-        enroll: true,      
+        enroll: true, 
+        linkdn: true,
+        twitter: true,
+        facebook: true,
+        instagram: true,     
         createdAt: true, 
       }
     });
     res.status(200).json({ users });
+    console.log("hello");
+    console.log(users);
     return;
   }
 );

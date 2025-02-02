@@ -8,34 +8,38 @@ interface User {
   id: number;
   name: string;
   email: string;
-  photo?: string;
-  course?: string;
-  department?: string;
-  batch?: string;
+  photo: string;
+  course: string;
+  department: string;
+  batch: string;
   enroll?: string;
   phone?: string;
   linkdn?: string;
   twitter?: string;
   facebook?: string;
   instagram?: string;
+  createdAt?: Date;
 }
 //route protection for the dashboard
 const Dashboard = () => {
   const [fetchedUsers, setFetchedUsers] = useState<User[]>([]);
   const [filterVisible, setFilterVisible] = useState(false);
   const [name, setName] = useState("");
-  const [page, setPage] = useState(1); //will be used soon in the last diiv
+  const [page, setPage] = useState(1);
   const [searchByBatchs, setSearchByBatchs] = useState<number[]>([]);
   const [searchByDepartments, setSearchByDepartments] = useState<string[]>([]);
   const [searchByCourses, setSearchByCourses] = useState<string[]>([]);
-  // const [fetchedUsers, setFetchedUsers] = useState<Object[]>([]);
+ 
 
   const fetchUsers = async () => {
-    const response = await axios.post<{ data: User[] }>(
-      `${BACKEND_URL}api/v1/user/dashboard/users?name=${name}&page=${page}`,
-      { searchByBatchs, searchByDepartments, searchByCourses }
+    const response = await axios.post<{ users: User[] }>(
+      `${BACKEND_URL}/api/v1/user/dashboard/users?name=${name}&page=${page}`,
+      { searchByBatchs, searchByDepartments, searchByCourses },
+      { withCredentials: true }
     );
-    setFetchedUsers(response.data.data);
+    setFetchedUsers(response.data.users);
+    console.log(response.data.users);
+   
   };
   const changePage = ({ change }: any) => {
     setPage((prev) => prev + change);
@@ -45,7 +49,6 @@ const Dashboard = () => {
     [name, page, searchByBatchs, searchByDepartments, searchByCourses],
     500
   );
-
   const batchs = Array.from({ length: 2020 - 1960 + 1 }, (_, i) => 1960 + i);
   const departments = {
     1: {
@@ -214,50 +217,6 @@ const Dashboard = () => {
       <div className="p-4 bg-gray-100">
         <h2 className="text-lg font-semibold mb-4">Fetched Users</h2>
         <div className="space-y-2">
-          <UserCard
-            user={{
-              id: 1,
-              name: "Rahul Sharma",
-              email: "rahul.sharma@example.com",
-              photo: "https://via.placeholder.com/150", // Replace with an actual URL if available
-              course: "Computer Science",
-              department: "Engineering",
-              batch: "2025",
-            }}
-          />
-          <UserCard
-            user={{
-              id: 1,
-              name: "Rahul Sharma",
-              email: "rahul.sharma@example.com",
-              photo: "https://via.placeholder.com/150", // Replace with an actual URL if available
-              course: "Computer Science",
-              department: "Engineering",
-              batch: "2025",
-            }}
-          />
-          <UserCard
-            user={{
-              id: 1,
-              name: "Rahul Sharma",
-              email: "rahul.sharma@example.com",
-              photo: "https://via.placeholder.com/150", // Replace with an actual URL if available
-              course: "Computer Science",
-              department: "Engineering",
-              batch: "2025",
-            }}
-          />
-          <UserCard
-            user={{
-              id: 1,
-              name: "Rahul Sharma",
-              email: "rahul.sharma@example.com",
-              photo: "https://via.placeholder.com/150", // Replace with an actual URL if available
-              course: "Computer Science",
-              department: "Engineering",
-              batch: "2025",
-            }}
-          />
           {fetchedUsers.map((user) => (
             <div
               key={user.id}
