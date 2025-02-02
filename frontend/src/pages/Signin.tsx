@@ -7,7 +7,7 @@ const Signin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [responseStatus, setResponseStatus] = useState(0);
   const [responseData, setResponseData] = useState({ message: "" });
-  const [cookie] = useState(
+  const [cookie,setCookie] = useState(
     document.cookie
       .split("; ")
       .find((row) => row.startsWith("login="))
@@ -43,6 +43,7 @@ const Signin = () => {
       );
       if (response.status === 200) {
         console.log(response.data);
+        setCookie((response.data as { token: string }).token);
         navigate("/dashboard");
       }
       if (response.status === 403) {

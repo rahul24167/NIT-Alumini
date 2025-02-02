@@ -15,7 +15,7 @@ const Navbar = ({ className }: NavbarProps) => {
       .find((row) => row.startsWith("login="))
       ?.split("=")[1];
     setCookie(loginCookie);
-  }, []);
+  }, [document.cookie]);
   const navigate = useNavigate();
   const logoutHandler = async () => {
     try {
@@ -24,6 +24,8 @@ const Navbar = ({ className }: NavbarProps) => {
       });
       if (response.status === 200) {
         console.log("Logout successful");
+        setCookie(undefined);
+        navigate("/");
       }
     } catch (error) {
       console.error("Logout failed:", error);
