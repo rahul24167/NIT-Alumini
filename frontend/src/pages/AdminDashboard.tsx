@@ -36,39 +36,6 @@ const AdminDashboard = () => {
   const [searchByDepartments, setSearchByDepartments] = useState<string[]>([]);
   const [searchByCourses, setSearchByCourses] = useState<string[]>([]);
   const [fetchedUsers, setFetchedUsers] = useState<User[]>([]);
-  enum AskedBy {
-    User = "user",
-    Admin = "admin",
-  }
-
-  const fetchUsers = async () => {
-    const response = await axios.post<{ users: User[] }>(
-      `${BACKEND_URL}/api/v1/admin/dashboard/users?allUser=${allUser}&name=${name}&page=${page}&accountVerified=${accountVerified}&isRejected=${isRejected}`,
-      { searchByBatchs, searchByDepartments, searchByCourses },
-      { withCredentials: true }
-    );
-    console.log(response.data.users);
-    setFetchedUsers(response.data.users);
-  };
-  const changePage = ({ change }: any) => {
-    if (page + change > 0) {
-      setPage((prev) => prev + change);
-    }
-  };
-  useDebounce(
-    fetchUsers,
-    [
-      allUser,
-      name,
-      page,
-      accountVerified,
-      isRejected,
-      searchByBatchs,
-      searchByDepartments,
-      searchByCourses,
-    ],
-    500
-  );
   const batchs = Array.from({ length: 2020 - 1960 + 1 }, (_, i) => 1960 + i);
   const departments = {
     1: {
@@ -105,10 +72,43 @@ const AdminDashboard = () => {
     },
   };
   const courses = { 1: "B.Tech", 2: "M.Tech", 3: "Ph.D" };
+  enum AskedBy {
+    User = "user",
+    Admin = "admin",
+  }
+
   const togglefilter = () => {
     setFilterVisible((curr) => !curr);
   };
-
+  const changePage = ({ change }: any) => {
+    if (page + change > 0) {
+      setPage((prev) => prev + change);
+    }
+  };
+  const fetchUsers = async () => {
+    const response = await axios.post<{ users: User[] }>(
+      `${BACKEND_URL}/api/v1/admin/dashboard/users?allUser=${allUser}&name=${name}&page=${page}&accountVerified=${accountVerified}&isRejected=${isRejected}`,
+      { searchByBatchs, searchByDepartments, searchByCourses },
+      { withCredentials: true }
+    );
+    console.log(response.data.users);
+    setFetchedUsers(response.data.users);
+  };
+ 
+  useDebounce(
+    fetchUsers,
+    [
+      allUser,
+      name,
+      page,
+      accountVerified,
+      isRejected,
+      searchByBatchs,
+      searchByDepartments,
+      searchByCourses,
+    ],
+    500
+  );
   return (
     <div className="bg-slate-500 min-h-screen p-6">
       {/* Main Filter Section */}

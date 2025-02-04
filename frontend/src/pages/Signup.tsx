@@ -3,14 +3,22 @@ import { BACKEND_URL } from "../config"
 import axios from "axios"
 
 const Signup = () => {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+  const [user, setUser] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [result, setResult] = useState(false)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUser({
+      ...user,
+      [e.target.name]: e.target.value,
+    });
+  };
   const signupHandler = async (e:React.FormEvent)=>{
     e.preventDefault();
-    const response= await axios.post(`${BACKEND_URL}/api/v1/user/auth/signup`, {name, email, password, confirmPassword},{withCredentials:true})
+    const response= await axios.post(`${BACKEND_URL}/api/v1/user/auth/signup`, user,{withCredentials:true})
     if (response.status === 200){
       console.log(response.data)
       setResult(true)
@@ -38,7 +46,8 @@ const Signup = () => {
           type="text"
           id="name"
           name="name"
-          onChange={(e) => setName(e.target.value)}
+          value={user.name}
+          onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
         />
       </div>
@@ -50,7 +59,8 @@ const Signup = () => {
           type="email"
           id="email"
           name="email"
-          onChange={(e) => setEmail(e.target.value)}
+          value={user.email}
+          onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
         />
       </div>
@@ -62,7 +72,8 @@ const Signup = () => {
           type="password"
           id="password"
           name="password"
-          onChange={(e) => setPassword(e.target.value)}
+          value={user.password}
+          onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
         />
       </div>
@@ -74,7 +85,8 @@ const Signup = () => {
           type="password"
           id="confirmPassword"
           name="confirmPassword"
-          onChange={(e) => setConfirmPassword(e.target.value)}
+          value={user.confirmPassword}
+          onChange={handleChange}
           className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-300"
         />
       </div>
