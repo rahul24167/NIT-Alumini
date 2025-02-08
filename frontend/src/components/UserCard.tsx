@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { BACKEND_URL } from "@/config";
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 interface User {
   id: number;
