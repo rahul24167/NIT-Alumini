@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 const LandingPage = () => {
   const closeGalleryModal = () => {
     const modal = document.getElementById("galleryModal");
