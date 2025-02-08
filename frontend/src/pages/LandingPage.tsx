@@ -712,7 +712,7 @@ const LandingPage = () => {
         
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
      
-                <div className="animate__animated animate__fadeInLeft">
+                {/* <div className="animate__animated animate__fadeInLeft">
                   <div className="bg-white rounded-xl shadow-lg p-8">
                     <form id="contactForm" className="space-y-6">
                       <div>
@@ -746,7 +746,7 @@ const LandingPage = () => {
                       </button>
                     </form>
                   </div>
-                </div>
+                </div> */}
         
         
                 <div className="space-y-6 animate__animated animate__fadeInRight">
