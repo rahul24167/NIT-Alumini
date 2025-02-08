@@ -42,9 +42,11 @@ const Navbar = () => {
     navigate("/");
   }
   return (
-    <div className="navbar bg-base-100 sticky top-0 z-50">
+    <div className="navbar glass sticky top-0 z-50">
       <div className="flex-1">
-        <button onClick={navigateHome} className="btn btn-ghost text-xl">NIT Srinagar Alumini</button>
+        <button onClick={navigateHome} className="btn btn-ghost btn-outline">
+          <img className="object-contain h-11" src="/nit-logo.png" alt="nit srinagar logo" />
+        </button>
       </div>
       <div className="flex-none">
         {cookie ? (

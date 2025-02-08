@@ -134,7 +134,7 @@ const SignupForm: React.FC = () => {
             accept="image/*"
             onChange={handleFileChange}
             required
-            className="w-full border border-gray-300 p-2 rounded-md"
+            className="file-input file-input-bordered file-input-primary w-full max-w-xs"
           />
         </div>
         <fieldset className="mb-4">

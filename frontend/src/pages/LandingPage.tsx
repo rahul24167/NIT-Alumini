@@ -296,11 +296,11 @@ const LandingPage = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-semibold text-neutral-900 text-center mb-2">Dr. Rakesh Kumar</h3>
-                    <p className="text-blue-600 text-center mb-3">Batch of 1985</p>
-                    <p className="text-neutral-600 text-center mb-4">CEO, Tech Innovations Inc.</p>
+                    <h3 className="text-xl font-semibold text-neutral-900 text-center mb-2"> Sonam WangChuck</h3>
+                    <p className="text-blue-600 text-center mb-3">Batch of 1983</p>
+                    <p className="text-neutral-600 text-center mb-4">Founder, SECMOL</p>
                     <div className="text-sm text-neutral-500 text-center">
-                      Pioneer in AI Research & Development
+                    Engineer, Innovator and Education Reformist
                     </div>
                   </div>
                 </div>
