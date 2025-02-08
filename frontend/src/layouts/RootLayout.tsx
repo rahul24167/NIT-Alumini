@@ -4,8 +4,8 @@ import { Outlet } from "react-router-dom";
 
 const RootLayout = () => {
   return (
-    <div>
-      <Navbar className="sticky w-full bg-red-500"/>
+    <div className="">
+      <Navbar/>
       <Outlet/>
       <Footer/>
     </div>

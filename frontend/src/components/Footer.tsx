@@ -5,18 +5,16 @@ const Footer = () => {
     navigate("/admin/signin");
   };
   return (
-    <div className="bg-blue-400 text-white py-6">
-    <div className="text-center text-lg font-semibold">Footer</div>
-    <div className="mt-4 flex justify-center">
-      <button
-        onClick={handelClick}
-        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-md transition"
-      >
+    <footer className="footer footer-center bg-base-200 text-base-content rounded p-10">
+      <nav className="grid grid-flow-col gap-4">
+        <a className="link link-hover">About us</a>
+        <a className="link link-hover">Contact</a>
+      </nav>
+
+      <button onClick={handelClick} className="btn btn-outline">
         Login as Admin
       </button>
-    </div>
-  </div>
-  
+    </footer>
   );
 };
 
