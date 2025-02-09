@@ -4,188 +4,45 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/nit-logo.png" />
 
-    <!-- From Rollout-->
+    <!-- SEO -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="{{project.meta.ogDescription}}">
+    <meta name="description" content="Your project description">
     <meta name="theme-color" content="#ffffff">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="robots" content="{{project.meta.robotsMeta}}">
+    <meta name="robots" content="index, follow">
     <title>NIT Srinagar</title>
-    
+
+    <!-- Theme color fix for dark mode -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          metaThemeColor.setAttribute('content', '#121212');
+        }
+      });
+    </script>
 
     <!-- Base Styles -->
     <style>
-    * {
--ms-overflow-style: none;  /* IE and Edge */
-scrollbar-width: none;     /* Firefox */
-}
-
-/* Webkit browsers like Chrome, Safari, newer Edge */
-*::-webkit-scrollbar {
-display: none;
-width: 0;
-height: 0;
-}
-      /* Custom scrollbar */
-      ::-webkit-scrollbar {
-        width: 0px;
-      }
-      
-      ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 4px;
-      }
-      
-      ::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 4px;
-      }
-      
-      ::-webkit-scrollbar-thumb:hover {
-        background: #666;
-      }
-
-      /* Remove tap highlight on mobile */
       * {
+        scrollbar-width: none;
         -webkit-tap-highlight-color: transparent;
       }
-
-      /* Improve text rendering */
+      *::-webkit-scrollbar {
+        display: none;
+      }
       body {
         text-rendering: optimizeLegibility;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
       }
-
-      /* Focus outline styles */
-      :focus-visible {
-        outline: 2px solid currentColor;
-        outline-offset: 2px;
-      }
-
-      /* Print styles */
-      @media print {
-        .no-print {
-          display: none !important;
-        }
-        
-        a[href]:after {
-          content: " (" attr(href) ")";
-        }
-      }
     </style>
 
-    <!-- Enhanced Image Handler -->
+    <!-- Lazy Loading for Images -->
     <script>
       document.addEventListener('DOMContentLoaded', () => {
-        const imageObserver = new IntersectionObserver((entries, observer) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const img = entry.target;
-              if (img.dataset.src) {
-                const tempImage = new Image();
-                tempImage.onload = () => {
-                  img.src = img.dataset.src;
-                  img.classList.remove('opacity-0');
-                  img.classList.add('opacity-100');
-                };
-                tempImage.src = img.dataset.src;
-                img.removeAttribute('data-src');
-                observer.unobserve(img);
-              }
-            }
-          });
-        }, {
-          rootMargin: '50px 0px',
-          threshold: 0.01
+        document.querySelectorAll('img[data-src]').forEach(img => {
+          img.loading = 'lazy';
         });
-
-        const loadImage = (img) => {
-          if ('loading' in HTMLImageElement.prototype) {
-            img.loading = 'lazy';
-          }
-          
-          img.classList.add('transition-opacity', 'duration-300', 'opacity-0');
-          
-          img.onerror = () => {
-            const width = img.getAttribute('width') || img.clientWidth || 300;
-            const height = img.getAttribute('height') || img.clientHeight || 200;
-            img.src = `https://placehold.co/${width}x${height}/DEDEDE/555555?text=Image+Unavailable`;
-            img.alt = 'Image unavailable';
-            img.classList.remove('opacity-0');
-            img.classList.add('opacity-100', 'error-image');
-          };
-
-          if (img.dataset.src) {
-            imageObserver.observe(img);
-          } else {
-            img.classList.remove('opacity-0');
-            img.classList.add('opacity-100');
-          }
-        };
-
-        document.querySelectorAll('img[data-src], img:not([data-src])').forEach(loadImage);
-
-        // Watch for dynamically added images
-        new MutationObserver((mutations) => {
-          mutations.forEach(mutation => {
-            mutation.addedNodes.forEach(node => {
-              if (node.nodeType === 1) {
-                if (node.tagName === 'IMG') {
-                  loadImage(node);
-                }
-                node.querySelectorAll('img').forEach(loadImage);
-              }
-            });
-          });
-        }).observe(document.body, {
-          childList: true,
-          subtree: true
-        });
-      });
-
-      // Performance monitoring
-      if ('performance' in window && 'PerformanceObserver' in window) {
-        // Create performance observer
-        const observer = new PerformanceObserver((list) => {
-          const entries = list.getEntries();
-          entries.forEach((entry) => {
-            if (entry.entryType === 'largest-contentful-paint') {
-              // console.log(`LCP: ${entry.startTime}ms`);
-            }
-            if (entry.entryType === 'first-input') {
-              // console.log(`FID: ${entry.processingStart - entry.startTime}ms`);
-            }
-            if (entry.entryType === 'layout-shift') {
-              // console.log(`CLS: ${entry.value}`);
-            }
-          });
-        });
-
-        // Observe performance metrics
-        observer.observe({ entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift'] });
-
-        // Log basic performance metrics
-        window.addEventListener('load', () => {
-          const timing = performance.getEntriesByType('navigation')[0];
-          console.log({
-            'DNS Lookup': timing.domainLookupEnd - timing.domainLookupStart,
-            'TCP Connection': timing.connectEnd - timing.connectStart,
-            'DOM Content Loaded': timing.domContentLoadedEventEnd - timing.navigationStart,
-            'Page Load': timing.loadEventEnd - timing.navigationStart
-          });
-        });
-      }
-
-      // Handle offline/online status
-      window.addEventListener('online', () => {
-        document.body.classList.remove('offline');
-        console.log('Connection restored');
-      });
-      
-      window.addEventListener('offline', () => {
-        document.body.classList.add('offline');
-        console.log('Connection lost');
       });
     </script>
   </head>
