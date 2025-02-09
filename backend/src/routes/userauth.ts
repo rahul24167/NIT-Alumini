@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 const JWT_SECRET = process.env.JWT_SECRET;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
 if (!JWT_SECRET) {
-  console.error("JWT_SECRET is not defined");
+  console.error("JWT_SECRET is not defined ok");
   process.exit(1);
 }
 if (!FRONTEND_URL) {
