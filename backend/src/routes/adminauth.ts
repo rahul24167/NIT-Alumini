@@ -30,8 +30,18 @@ router.post(
     }
 
     const token = jwt.sign({ adminEmail: req.body.email}, JWT_SECRET);
-    res.cookie("token", token);
-    res.cookie('login','true');
+    res.cookie("token", token,{
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",  // Set true in production (HTTPS)
+      sameSite: "none",  // Required for cross-site requests
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    res.cookie('login','true',{
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",  // Set true in production (HTTPS)
+      sameSite: "none",  // Required for cross-site requests
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
     res.status(200).send("Logged in!");
     return;
   }
