@@ -131,8 +131,18 @@ router.post(
     if (!passwordMatch) {
       return res.status(400).json({ error: "Wrong password" });
     }
-    res.cookie("token", token);
-    res.cookie('login','true');
+    res.cookie("token", token,{
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",  // Set true in production (HTTPS)
+      sameSite: "none",  // Required for cross-site requests
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+    res.cookie('login','true',{
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",  // Set true in production (HTTPS)
+      sameSite: "none",  // Required for cross-site requests
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
     res.status(200).send("Logged in!");
     return;
   },
@@ -140,8 +150,16 @@ router.post(
 );
 
 router.get("/logout",authMiddleware, async (req: Request, res: Response) => {
-  res.clearCookie("token");
-  res.clearCookie('login');
+  res.clearCookie("token",{
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+  });
+  res.clearCookie('login',{
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+  });
   res.status(200).json({
     message: "Logged out",
   });
