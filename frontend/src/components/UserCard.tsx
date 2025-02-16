@@ -41,27 +41,6 @@ const UserCard: React.FC<UserCardProps> = ({ user, askedBy = AskedBy.User }) => 
   const toggleCard = () => {
     setIsExpanded((prev) => !prev);
   };
-
-  // const handleConfirm = async () => {
-  //   if (actionType === "verify") {
-  //     const response = await axios.get(`${BACKEND_URL}/api/v1/admin/dashboard/verify-user?userId=${user.id}&verify=true`,
-  //       { withCredentials: true }
-  //     );
-  //     if(response.status === 200){
-  //       setIsVerified(actionType === "verify");
-  //     }
-  //     console.log("Verifying user...");
-  //   } else {
-  //     const response = await axios.get(`${BACKEND_URL}/api/v1/admin/dashboard/verify-user?userId=${user.id}&verify=false`,
-  //       { withCredentials: true }
-  //     );
-  //     if(response.status === 200){
-  //       setIsVerified(false);
-  //     }
-  //     console.log("Unverifying user...");
-  //   }
-  //   setShowDialog(false); // Close the dialog
-  // };
   const handleConfirm = async () => {
     try {
       const response = await axios.get(
@@ -194,6 +173,11 @@ const UserCard: React.FC<UserCardProps> = ({ user, askedBy = AskedBy.User }) => 
           {/* Admin Actions */}
           {askedBy === AskedBy.Admin && (
             <>
+            {user.phone &&(
+              <div>
+                <span className="font-medium text-gray-700">Batch:</span> {user.phone}
+              </div>
+            )}
               {isVerified ? (
                 <div>
                   <p className="text-green-600">Verified by Admin</p>
