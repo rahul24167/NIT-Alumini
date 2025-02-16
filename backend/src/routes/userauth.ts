@@ -174,7 +174,7 @@ const profileBody = zod.object({
   department: zod.string(),
   batch: zod.string(),
   enroll: zod.string().optional(),
-  phone: zod.string().optional(),
+  phone: zod.string(),
   linkdn: zod.string().optional(),
   twitter: zod.string().optional(),
   facebook: zod.string().optional(),
@@ -204,6 +204,7 @@ router.post(
       course: parsedBody.data.course,
       department: parsedBody.data.department,
       batch: parsedBody.data.batch,
+      phone: parsedBody.data.phone,
     };
     if (parsedBody.data.enroll) {
       dataToupdate.enroll = parsedBody.data.enroll;
@@ -244,6 +245,9 @@ router.post(
         },
         data: dataToupdate,
       });
+      if (!updatedUser) {
+        return res.status(500).json({ error: "Failed to update user" });
+      };
       res.json({
         message: "Email verified successfully",
       });
@@ -251,7 +255,6 @@ router.post(
     } catch (err) {
       return res.status(400).json({ error: "Invalid token" });
     }
-    return;
   }
 );
 //send mail

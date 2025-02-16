@@ -86,6 +86,27 @@ const SignupForm: React.FC = () => {
       alert("Image is required!");
       return;
     }
+    if(!formData.name){
+      alert("Name is required!");
+      return;
+    }
+    if(!formData.phone){
+      alert("Phone is required!");
+      return;
+    }
+    if(!formData.batch){
+      alert("Batch is required!");
+      return;
+    }
+    if(!formData.department){
+      alert("Department is required!");
+      return;
+    }
+    if(!formData.course){
+      alert("Course is required!");
+      return;
+    }
+
 
     setIsSubmitting(true);
 
@@ -135,6 +156,18 @@ const SignupForm: React.FC = () => {
             onChange={handleFileChange}
             required
             className="file-input file-input-bordered file-input-primary w-full max-w-xs"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Phone (Optional)
+          </label>
+          <input
+            type="text"
+            name="phone"
+            value={formData.phone}
+            onChange={handleInputChange}
+            className="w-full border border-gray-300 p-2 rounded-md"
           />
         </div>
         <fieldset className="mb-4">
@@ -216,18 +249,7 @@ const SignupForm: React.FC = () => {
             className="w-full border border-gray-300 p-2 rounded-md"
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Phone (Optional)
-          </label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-            className="w-full border border-gray-300 p-2 rounded-md"
-          />
-        </div>
+       
         <div>
           <label className="block text-sm font-medium text-gray-700">
             LinkedIn (Optional)
