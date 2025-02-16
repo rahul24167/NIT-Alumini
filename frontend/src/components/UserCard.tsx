@@ -18,7 +18,7 @@ interface User {
   facebook?: string;
   instagram?: string;
   emailVerified?: boolean;
-  accuntVerified?: boolean;
+  accountVerified?: boolean;
   isRejected?: boolean;
   phoneVarified?: boolean;
   createdAt?: Date;
@@ -35,31 +35,50 @@ interface UserCardProps {
 const UserCard: React.FC<UserCardProps> = ({ user, askedBy = AskedBy.User }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
-  const [actionType, setActionType] = useState<"verify" | "unverify">(user.accuntVerified ? "unverify" : "verify");
+  const [isVerified, setIsVerified] = useState(user.accountVerified);
+  const [actionType, setActionType] = useState<"verify" | "unverify">(user.accountVerified ? "unverify" : "verify");
 
   const toggleCard = () => {
     setIsExpanded((prev) => !prev);
   };
 
+  // const handleConfirm = async () => {
+  //   if (actionType === "verify") {
+  //     const response = await axios.get(`${BACKEND_URL}/api/v1/admin/dashboard/verify-user?userId=${user.id}&verify=true`,
+  //       { withCredentials: true }
+  //     );
+  //     if(response.status === 200){
+  //       setIsVerified(actionType === "verify");
+  //     }
+  //     console.log("Verifying user...");
+  //   } else {
+  //     const response = await axios.get(`${BACKEND_URL}/api/v1/admin/dashboard/verify-user?userId=${user.id}&verify=false`,
+  //       { withCredentials: true }
+  //     );
+  //     if(response.status === 200){
+  //       setIsVerified(false);
+  //     }
+  //     console.log("Unverifying user...");
+  //   }
+  //   setShowDialog(false); // Close the dialog
+  // };
   const handleConfirm = async () => {
-    if (actionType === "verify") {
-      const response = await axios.get(`${BACKEND_URL}/api/v1/admin/dashboard/verify-user?userId=${user.id}&verify=true`,
+    try {
+      const response = await axios.get(
+        `${BACKEND_URL}/api/v1/admin/dashboard/verify-user?userId=${user.id}&verify=${actionType === "verify"}`,
         { withCredentials: true }
       );
-      if(response.status === 200){
-        user.accuntVerified = true;
+  
+      if (response.status === 200) {
+        const newVerificationState = actionType === "verify";
+        setIsVerified(newVerificationState);
+        setActionType(newVerificationState ? "unverify" : "verify"); // Update button text dynamically
       }
-      console.log("Verifying user...");
-    } else {
-      const response = await axios.get(`${BACKEND_URL}/api/v1/admin/dashboard/verify-user?userId=${user.id}&verify=false`,
-        { withCredentials: true }
-      );
-      if(response.status === 200){
-        user.accuntVerified = false;
-      }
-      console.log("Unverifying user...");
+    } catch (error) {
+      console.error("Error verifying user:", error);
     }
-    setShowDialog(false); // Close the dialog
+  
+    setShowDialog(false);
   };
   // const handleReject = async () => {
     
@@ -175,7 +194,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, askedBy = AskedBy.User }) => 
           {/* Admin Actions */}
           {askedBy === AskedBy.Admin && (
             <>
-              {user.accuntVerified ? (
+              {isVerified ? (
                 <div>
                   <p className="text-green-600">Verified by Admin</p>
                   <Button
